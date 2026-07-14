@@ -38,18 +38,27 @@ const Ico = {
   Grid: (p) => <Svg size={p.s||24} cl={p.c} d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z" />,
   Wifi: (p) => <Svg size={p.s||24} cl={p.c} d="M1.42 9a16 16 0 0121.16 0M5 12.55a11 11 0 0114.08 0M8.53 16.11a6 6 0 016.95 0M12 20h.01" />,
   Battery: (p) => <Svg size={p.s||24} cl={p.c} d="M17 6H3a2 2 0 00-2 2v8a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2zM23 10v4" />,
+  Globe: (p) => <Svg size={p.s||24} cl={p.c} d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />,
+  Calculator: (p) => <Svg size={p.s||24} cl={p.c} d="M4 7h16M4 7v10a2 2 0 002 2h12a2 2 0 002-2V7M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2M8 11h.01M12 11h.01M16 11h.01M8 15h.01M12 15h.01" />,
+  Image: (p) => <Svg size={p.s||24} cl={p.c} d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z" />,
+  Music: (p) => <Svg size={p.s||24} cl={p.c} d="M9 18V5l12-2v13M9 18a3 3 0 11-6 0 3 3 0 016 0zM21 16a3 3 0 11-6 0 3 3 0 016 0z" />,
+  Video: (p) => <Svg size={p.s||24} cl={p.c} d="M23 7l-7 5 7 5V7zM1 5h14a2 2 0 012 2v10a2 2 0 01-2 2H1z" />,
+  Mail: (p) => <Svg size={p.s||24} cl={p.c} d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zM22 6l-10 7L2 6" />,
+  Lock: (p) => <Svg size={p.s||24} cl={p.c} d="M19 11H5a2 2 0 00-2 2v7a2 2 0 002 2h14a2 2 0 002-2v-7a2 2 0 00-2-2zM7 11V7a5 5 0 0110 0v4" />,
 }
 
 /* ── Terminal Engine ───────────────────────────────────── */
 
 const FILESYSTEM = {
-  '~': { type: 'dir', children: ['Documents', 'Downloads', '.bashrc', 'README.md', 'codixos.conf'] },
-  '~/Documents': { type: 'dir', children: ['notes.txt'] },
+  '~': { type: 'dir', children: ['Documents', 'Downloads', 'Pictures', '.bashrc', 'README.md', 'codixos.conf'] },
+  '~/Documents': { type: 'dir', children: ['notes.txt', 'project-plan.md'] },
   '~/Downloads': { type: 'dir', children: [] },
-  '~/.bashrc': { type: 'file', content: '# CodixOS Shell Config\nexport PS1="codix@codixos:~$ "\nexport PATH=/usr/local/bin:$PATH' },
-  '~/README.md': { type: 'file', content: '# CodixOS\nA lightweight, terminal-based operating system.\nBuilt from scratch with a custom kernel.' },
-  '~/codixos.conf': { type: 'file', content: 'kernel.codix.version=1.0.0\ndisplay.resolution=1920x1080\ndisplay.theme=catppuccin-mocha' },
-  '~/Documents/notes.txt': { type: 'file', content: 'TODO:\n- Finish kernel memory manager\n- Add TCP/IP stack\n- Write man pages' },
+  '~/Pictures': { type: 'dir', children: ['wallpaper.png', 'screenshot.png'] },
+  '~/.bashrc': { type: 'file', content: '# CodixOS Shell Config\nexport PS1="codix@codixos:~$ "\nexport PATH=/usr/local/bin:$PATH\nalias ll="ls -la"' },
+  '~/README.md': { type: 'file', content: '# CodixOS\nA lightweight, terminal-based operating system.\nBuilt from scratch with a custom kernel.\n\n## Features\n- Custom kernel with memory management\n- Built-in shell with 40+ commands\n- Package manager\n- Desktop environment\n- Full security suite' },
+  '~/codixos.conf': { type: 'file', content: 'kernel.codix.version=1.0.0\ndisplay.resolution=1920x1080\ndisplay.theme=catppuccin-mocha\nsecurity.secureboot=enabled\nsecurity.encryption=enabled' },
+  '~/Documents/notes.txt': { type: 'file', content: 'TODO:\n- Finish kernel memory manager\n- Add TCP/IP stack\n- Write man pages\n- Package Firefox' },
+  '~/Documents/project-plan.md': { type: 'file', content: '# CodixOS Project Plan\n\n## Phase 1: Core OS\n- [x] Kernel\n- [x] Shell\n- [x] Utilities\n\n## Phase 2: Desktop\n- [x] Window Manager\n- [x] File Manager\n- [x] Text Editor\n\n## Phase 3: Security\n- [x] Secure Boot\n- [x] Encryption\n- [x] Authentication' },
 }
 
 let cwd = '~'
@@ -66,8 +75,8 @@ function processCommand(input) {
   const cmd = parts[0]; const args = parts.slice(1)
   if (!cmd) return ''
   if (cmd === 'cd') { const t = args[0] ? resolvePath(args[0]) : '~'; if (FILESYSTEM[t]?.type === 'dir') { cwd = t; return null }; return `cd: ${args[0]}: No such directory` }
-  if (cmd === 'help') return 'Commands: help, neofetch, ls, cat, pwd, whoami, hostname, uname, date, uptime, free, ps, df, echo, clear, pkg, theme, secureboot, encrypt, auth, hardening, audit, sandbox, tls, exit'
-  if (cmd === 'neofetch') return `       _____      _               ____   _____ \n      / ____|    | |             |  _ \\ / ____|\n     | |     ___ | | ___  _ __   | |_) | (___  \n     | |    / _ \\| |/ _ \\| '__|  |  _ < \\___ \\ \n     | |___| (_) | | (_) | |     | |_) |____) |\n      \\_____|\\___/|_|\\___/|_|     |____/|_____/ \n\n${C.blue}OS${C.text}:       CodixOS 1.0.0 x86_64\n${C.blue}Kernel${C.text}:   codix-kernel 1.0.0\n${C.blue}Shell${C.text}:    codix-sh 1.0.0\n${C.blue}CPU${C.text}:      Virtual CPU @ 2.4GHz\n${C.blue}Memory${C.text}:   32MiB / 256MiB\n\n${C.red}███${C.green}███${C.yellow}███${C.blue}███${C.magenta}███${C.teal}███${C.text}`
+  if (cmd === 'help') return `Commands:\n  System:    help, clear, echo, exit, reboot\n  Files:     ls, cat, pwd, cd, mkdir, cp, mv, rm\n  Info:      neofetch, whoami, hostname, uname, date, uptime\n  Resources: free, ps, df\n  Packages:  pkg install, pkg list, pkg update\n  Security:  secureboot, encrypt, auth, hardening, audit, sandbox, tls\n  Apps:      firefox, calculator, files, editor, settings\n  Theme:     theme`
+  if (cmd === 'neofetch') return `${C.blue}        _____      _               ____   _____ ${C.text}\n${C.blue}       / ____|    | |             |  _ \\ / ____|${C.text}\n${C.blue}      | |     ___ | | ___  _ __   | |_) | (___  ${C.text}\n${C.blue}      | |    / _ \\| |/ _ \\| '__|  |  _ < \\___ \\ ${C.text}\n${C.blue}      | |___| (_) | | (_) | |     | |_) |____) |${C.text}\n${C.blue}       \\_____\\___/|_|\\___/|_|     |____/|_____/ ${C.text}\n\n${C.blue}OS${C.text}:       CodixOS 1.0.0 x86_64\n${C.blue}Kernel${C.text}:   codix-kernel 1.0.0\n${C.blue}Shell${C.text}:    codix-sh 1.0.0\n${C.blue}DE${C.text}:      codix-desktop 1.0.0\n${C.blue}CPU${C.text}:      Virtual CPU @ 2.4GHz\n${C.blue}Memory${C.text}:   32MiB / 256MiB\n${C.blue}Disk${C.text}:     128MB / 512MB\n${C.blue}Uptime${C.text}:   4h 23m\n\n${C.blue}Apps${C.text}:     Firefox, Terminal, File Manager,\n           Text Editor, Calculator, Settings,\n           System Monitor, Image Viewer\n\n${C.red}███${C.green}███${C.yellow}███${C.blue}███${C.magenta}███${C.teal}███${C.text}`
   if (cmd === 'ls') { const t = args[0] ? resolvePath(args[0]) : cwd; const e = FILESYSTEM[t]; if (!e) return `ls: cannot access '${args[0]}': No such file or directory`; if (e.type !== 'dir') return args[0]; return e.children.map(c => { const cp = t === '~' ? `~/${c}` : `${t}/${c}`; return FILESYSTEM[cp]?.type === 'dir' ? `${C.blue}${c}/${C.text}` : c }).join('  ') }
   if (cmd === 'cat') { if (!args[0]) return 'cat: missing operand'; const p = resolvePath(args[0]); const e = FILESYSTEM[p]; if (!e) return `cat: ${args[0]}: No such file`; if (e.type === 'dir') return `cat: ${args[0]}: Is a directory`; return e.content }
   if (cmd === 'pwd') return cwd
@@ -76,25 +85,80 @@ function processCommand(input) {
   if (cmd === 'uname') return args[0] === '-a' ? 'CodixOS codixos 1.0.0 #1 SMP x86_64 GNU/Codix' : 'CodixOS'
   if (cmd === 'date') return new Date().toString()
   if (cmd === 'uptime') return ' 06:42:33 up 4:23, 1 user, load average: 0.12, 0.08, 0.05'
-  if (cmd === 'free') return '              total        used        free\nMem:        262144       32768      196608\nSwap:       131072           0      131072'
-  if (cmd === 'ps') return '  PID TTY          TIME CMD\n    1 ?        00:00:02 codix-init\n   12 ?        00:00:00 codix-sh\n   45 ?        00:00:01 codix-wm\n   67 ?        00:00:00 codix-term'
-  if (cmd === 'df') return 'Filesystem     1K-blocks   Used Available Use% Mounted on\n/dev/sda1       131072  32768    98304  25% /\n/dev/sda2       262144  12288   249856   5% /home'
+  if (cmd === 'free') return '              total        used        free      shared  buff/cache   available\nMem:        262144       32768      196608        4096       32768      225280\nSwap:       131072           0      131072'
+  if (cmd === 'ps') return '  PID TTY          TIME CMD\n    1 ?        00:00:02 codix-init\n   12 ?        00:00:00 codix-sh\n   45 ?        00:00:01 codix-wm\n   67 ?        00:00:00 codix-term\n   89 ?        00:00:00 firefox\n   91 ?        00:00:00 codix-desktop'
+  if (cmd === 'df') return 'Filesystem     1K-blocks   Used Available Use% Mounted on\n/dev/sda1       131072  32768    98304  25% /\n/dev/sda2       262144  12288   249856   5% /home\ntmpfs            16384     16     16368   1% /tmp'
   if (cmd === 'echo') return args.join(' ')
   if (cmd === 'clear') return '__CLEAR__'
-  if (cmd === 'theme') return `Catppuccin Mocha:\n  ${C.red}██${C.text} Red #f38ba8\n  ${C.blue}██${C.text} Blue #89b4fa\n  ${C.green}██${C.text} Green #a6e3a1\n  ${C.yellow}██${C.text} Yellow #f9e2af\n  ${C.magenta}██${C.text} Magenta #f5c2e7`
+  if (cmd === 'reboot') return 'Rebooting system...'
   if (cmd === 'exit') return 'Nice try. This terminal has no escape.'
-  if (cmd === 'pkg') { if (args[0] === 'list') return 'Installed:\n  codix-kernel 1.0.0\n  codix-sh 1.0.0\n  codix-term 1.0.0\n  codix-pkg 1.0.0'; return 'Usage: pkg <install|list>' }
-  if (cmd === 'secureboot') return `\n${C.teal}=== Secure Boot Status ===${C.text}\n\n  State:             ${C.green}ENABLED${C.text}\n  Trusted Keys:      1\n\n  ${C.teal}Boot Chain Verification:${C.text}\n    Firmware:        ${C.green}VERIFIED${C.text}\n    Bootloader:      ${C.green}VERIFIED${C.text}\n    Kernel:          ${C.green}VERIFIED${C.text}\n    Initrd:          ${C.yellow}NOT VERIFIED${C.text}\n\n  Overall Status:    ${C.green}SECURE${C.text}\n`
+  if (cmd === 'theme') return `Catppuccin Mocha Theme:\n  ${C.red}██${C.text} Red    #f38ba8\n  ${C.blue}██${C.text} Blue   #89b4fa\n  ${C.green}██${C.text} Green  #a6e3a1\n  ${C.yellow}██${C.text} Yellow #f9e2af\n  ${C.magenta}██${C.text} Mauve  #cba6f7\n  ${C.teal}██${C.text} Teal   #94e2d5\n  ${C.peach}██${C.text} Peach  #fab387`
+  if (cmd === 'pkg') { if (args[0] === 'list') return 'Installed packages:\n  codix-kernel    1.0.0\n  codix-sh        1.0.0\n  codix-term      1.0.0\n  codix-pkg       1.0.0\n  codix-desktop   1.0.0\n  firefox         120.0\n  codix-utils     1.0.0\n  codix-security  1.0.0'; if (args[0] === 'install') return `Installing ${args[1] || 'package'}...`; if (args[0] === 'update') return 'Updating package lists...'; return 'Usage: pkg <install|list|update>' }
+  if (cmd === 'firefox') return 'Launching Firefox browser...\n[Firefox would open here]'
+  if (cmd === 'calculator') return 'Launching Calculator...\n[Calculator would open here]'
+  if (cmd === 'files') return 'Launching File Manager...\n[File Manager would open here]'
+  if (cmd === 'editor') return 'Launching Text Editor...\n[Text Editor would open here]'
+  if (cmd === 'settings') return 'Launching Settings...\n[Settings would open here]'
+  if (cmd === 'monitor') return 'Launching System Monitor...\n[CPU: 2% | RAM: 12% | Disk: 25%]'
+  if (cmd === 'secureboot') return `\n${C.teal}=== Secure Boot Status ===${C.text}\n\n  State:             ${C.green}ENABLED${C.text}\n  Trusted Keys:      1\n\n  ${C.teal}Boot Chain Verification:${C.text}\n    Firmware:        ${C.green}VERIFIED${C.text}\n    Bootloader:      ${C.green}VERIFIED${C.text}\n    Kernel:          ${C.green}VERIFIED${C.text}\n    Initrd:          ${C.green}VERIFIED${C.text}\n\n  Overall Status:    ${C.green}SECURE${C.text}\n`
   if (cmd === 'encrypt') return `\n${C.teal}=== Encrypted Devices ===${C.text}\n\n  DEVICE               MAPPER         CIPHER     KEY      STATUS\n  ------               ------         ------     ---      ------\n  /dev/sda2            codix-data     aes-xts    256      ${C.green}UNLOCKED${C.text}\n  /dev/sda3            -              aes-xts    256      ${C.yellow}LOCKED${C.text}\n`
-  if (cmd === 'auth') return `\n${C.teal}=== Authentication Status ===${C.text}\n\n  Users:       3\n  Sessions:    2\n  MFA Required: Yes\n\n  Password Policy:\n    Min Length:      12\n    Expiry Days:     90\n    Max Attempts:    5\n    Lockout (sec):   300\n`
-  if (cmd === 'hardening') return `\n${C.teal}=== System Hardening Status ===${C.text}\n\n  Level:           ${C.green}HIGH${C.text}\n  Security Score:  ${C.green}92${C.text}/100\n\n  Components:\n    Firewall:      ${C.green}ENABLED${C.text}\n    SELinux:       ${C.green}ENABLED${C.text}\n    Audit:         ${C.green}ENABLED${C.text}\n    Ptrace Scope:  2\n\n  Services:  8/17 enabled\n  Open Ports: 5\n`
-  if (cmd === 'audit') return `\n${C.teal}=== Audit System Status ===${C.text}\n\n  Enabled:         Yes\n  Level Filter:    WARNING\n  Total Events:    1,247\n  Security Events: 23\n  Rules:           8\n  Recipients:      2\n`
-  if (cmd === 'sandbox') return `\n${C.teal}=== Sandboxes ===${C.text}\n\n  ID   NAME                 TYPE        STATUS\n  ---  ----                 ----        ------\n  1    web-browser          container   RUNNING\n  2    terminal-app         namespace   RUNNING\n  3    file-manager         chroot      STOPPED\n`
-  if (cmd === 'tls') return `\n${C.teal}=== Data Protection Status ===${C.text}\n\n  Key Pairs:    2\n  Certificates: 3\n  Connections:  4\n\n  TLS Configuration:\n    Min Version:   1.2\n    Max Version:   1.3\n    Client Certs:  Optional\n    Hostname Vfy:  Enabled\n`
+  if (cmd === 'auth') return `\n${C.teal}=== Authentication Status ===${C.text}\n\n  Users:       3\n  Sessions:    2\n  MFA Required: Yes\n\n  Password Policy:\n    Min Length:      12\n    Complexity:      Upper + Lower + Digits + Symbols\n    Expiry Days:     90\n    Max Attempts:    5\n    Lockout (sec):   300\n`
+  if (cmd === 'hardening') return `\n${C.teal}=== System Hardening Status ===${C.text}\n\n  Level:           ${C.green}HIGH${C.text}\n  Security Score:  ${C.green}92${C.text}/100\n\n  Components:\n    Firewall:      ${C.green}ENABLED${C.text}\n    SELinux:       ${C.green}ENABLED${C.text}\n    Audit:         ${C.green}ENABLED${C.text}\n    Ptrace Scope:  2\n    No New Privs:  Yes\n\n  Services:  8/17 enabled\n  Open Ports: 5 (22, 80, 443, 53, 123)\n  Blacklisted: 3 apps\n`
+  if (cmd === 'audit') return `\n${C.teal}=== Audit System Status ===${C.text}\n\n  Enabled:         Yes\n  Console Output:  Yes\n  Level Filter:    WARNING\n\n  Total Events:    1,247\n  Security Events: 23\n  Failed Logins:   7\n  Rules:           8\n  Recipients:      2\n\n  Recent Events:\n    [06:42:15] LOGIN codix 127.0.0.1\n    [06:42:10] BOOT system started\n    [06:41:55] CONFIG hardening applied\n`
+  if (cmd === 'sandbox') return `\n${C.teal}=== Sandboxes ===${C.text}\n\n  ID   NAME                 TYPE        STATUS     CAPS\n  ---  ----                 ----        ------     ----\n  1    web-browser          container   RUNNING    2\n  2    terminal-app         namespace   RUNNING    5\n  3    file-manager         chroot      STOPPED    0\n  4    text-editor          namespace   RUNNING    3\n\n  Active Namespaces: PID, NET, MNT\n  Resource Limits:   512MB RAM, 256 PIDs\n`
+  if (cmd === 'tls') return `\n${C.teal}=== Data Protection Status ===${C.text}\n\n  Key Pairs:    2\n    - RSA-2048 (server)\n    - ECDSA-P256 (client)\n\n  Certificates: 3\n    - CN=codixos (self-signed)\n    - CN=*.codixos.local\n    - CN=root-ca (CA)\n\n  Connections:  4 active\n\n  TLS Configuration:\n    Min Version:   1.2\n    Max Version:   1.3\n    Cipher Suites: 7\n    Client Certs:  Optional\n    Hostname Vfy:  Enabled\n`
   return `codix: command not found: ${cmd}\nType 'help' for available commands.`
 }
 
-/* ── Interactive Terminal ──────────────────────────────── */
+/* ── Boot Sequence Animation ───────────────────────────── */
+
+function BootSequence({ onComplete }) {
+  const [lines, setLines] = useState([])
+  const [done, setDone] = useState(false)
+  const bootLines = [
+    { text: 'CodixOS Bootloader v1.0.0', delay: 100 },
+    { text: 'Verifying Secure Boot... OK', delay: 300 },
+    { text: 'Loading kernel...', delay: 200 },
+    { text: 'Initializing memory manager... OK', delay: 150 },
+    { text: 'Mounting root filesystem... OK', delay: 200 },
+    { text: 'Starting init system... OK', delay: 150 },
+    { text: 'Loading security modules...', delay: 100 },
+    { text: '  Secure Boot: ENABLED', delay: 100 },
+    { text: '  Disk Encryption: ENABLED', delay: 100 },
+    { text: '  Authentication: ENABLED', delay: 100 },
+    { text: '  Firewall: ENABLED', delay: 100 },
+    { text: 'Starting desktop environment...', delay: 200 },
+    { text: 'Loading applications...', delay: 150 },
+    { text: '', delay: 100 },
+    { text: `${C.green}Welcome to CodixOS v1.0.0${C.text}`, delay: 200 },
+  ]
+
+  useEffect(() => {
+    let idx = 0
+    const timer = setInterval(() => {
+      if (idx < bootLines.length) {
+        setLines(p => [...p, bootLines[idx].text])
+        idx++
+      } else {
+        clearInterval(timer)
+        setDone(true)
+        setTimeout(onComplete, 500)
+      }
+    }, 150)
+    return () => clearInterval(timer)
+  }, [])
+
+  return (
+    <div className="w-full h-full flex flex-col justify-center p-6 font-mono text-xs" style={{ backgroundColor: '#000', fontFamily: "'Courier New', monospace" }}>
+      {lines.map((l, i) => (
+        <div key={i} style={{ color: l.includes('OK') ? C.green : l.includes('Welcome') ? C.green : l.includes('ENABLED') ? C.teal : '#aaa' }}>{l}</div>
+      ))}
+      {!done && <span className="animate-pulse" style={{ color: C.green }}>_</span>}
+    </div>
+  )
+}
+
+/* ── Terminal Engine ───────────────────────────────────── */
 
 function TermApp({ onOutput }) {
   const [lines, setLines] = useState([{ type: 'o', text: 'Welcome to CodixOS Terminal v1.0.0\nType help for available commands.\n' }])
@@ -146,55 +210,192 @@ function TermApp({ onOutput }) {
   )
 }
 
-/* ── File Manager App ──────────────────────────────────── */
+/* ── Firefox Browser App ───────────────────────────────── */
 
-function FileManagerApp() {
-  const [path, setPath] = useState('~')
-  const entry = FILESYSTEM[path] || { type: 'dir', children: [] }
+function FirefoxApp() {
+  const [url, setUrl] = useState('https://www.google.com')
+  const [tabs, setTabs] = useState([{ title: 'New Tab', url: 'https://www.google.com' }])
+  const [activeTab, setActiveTab] = useState(0)
 
   return (
     <div className="h-full flex flex-col" style={{ backgroundColor: C.bg }}>
-      <div className="flex items-center gap-1 px-2 py-1.5 text-xs border-b" style={{ borderColor: C.overlay, backgroundColor: C.surface }}>
-        {path !== '~' && <button onClick={() => setPath('..')} className="px-2 py-0.5 rounded hover:bg-codix-overlay transition-colors" style={{ color: C.sub }}>Back</button>}
-        <span className="ml-2 font-mono" style={{ color: C.text }}>{path}</span>
-      </div>
-      <div className="flex-1 p-2 overflow-y-auto">
-        {entry.children.length === 0 ? (
-          <p className="text-xs p-2" style={{ color: C.sub }}>Empty folder</p>
-        ) : (
-          <div className="space-y-0.5">
-            {entry.children.map(c => {
-              const cp = path === '~' ? `~/${c}` : `${path}/${c}`
-              const isDir = FILESYSTEM[cp]?.type === 'dir'
-              return (
-                <button key={c} onClick={() => isDir && setPath(cp)} className="flex items-center gap-2 w-full px-2 py-1 rounded text-xs text-left hover:bg-codix-overlay transition-colors" style={{ color: C.text }}>
-                  {isDir ? <Icon.Folder size={14} c="text-codix-blue" /> : <Icon.File size={14} c="text-codix-sub" />}
-                  {c}{isDir ? '/' : ''}
-                </button>
-              )
-            })}
+      {/* Tab bar */}
+      <div className="flex items-center gap-1 px-2 py-1 border-b" style={{ backgroundColor: C.surface, borderColor: C.overlay }}>
+        {tabs.map((tab, i) => (
+          <div key={i} className="flex items-center gap-1 px-2 py-1 rounded text-[10px] cursor-pointer" style={{ backgroundColor: i === activeTab ? C.overlay : 'transparent', color: i === activeTab ? C.text : C.sub }}>
+            <Ico.Globe s={10} />
+            <span className="max-w-[80px] truncate">{tab.title}</span>
           </div>
-        )}
+        ))}
+        <button className="ml-1 text-[10px]" style={{ color: C.sub }}>+</button>
+      </div>
+      {/* URL bar */}
+      <div className="flex items-center gap-2 px-2 py-1 border-b" style={{ borderColor: C.overlay }}>
+        <Ico.Globe s={12} c="text-codix-blue" />
+        <div className="flex-1 px-2 py-0.5 rounded text-[10px]" style={{ backgroundColor: C.overlay, color: C.text }}>{url}</div>
+      </div>
+      {/* Content */}
+      <div className="flex-1 flex items-center justify-center" style={{ backgroundColor: '#fff' }}>
+        <div className="text-center">
+          <div className="text-2xl font-bold mb-2" style={{ color: '#4285f4' }}>Google</div>
+          <div className="w-64 h-8 rounded-full border px-3 flex items-center" style={{ borderColor: '#ddd' }}>
+            <Ico.Terminal s={12} c="#9aa0a6" />
+          </div>
+        </div>
       </div>
     </div>
   )
 }
 
-function Icon({ size, c, children }) {
-  return <span className={c} style={{ fontSize: size }}>{children}</span>
+/* ── Calculator App ────────────────────────────────────── */
+
+function CalculatorApp() {
+  const [display, setDisplay] = useState('0')
+  const [expr, setExpr] = useState('')
+
+  function btn(val) {
+    if (val === 'C') { setDisplay('0'); setExpr(''); return }
+    if (val === '=') { try { setDisplay(String(eval(expr))) } catch { setDisplay('Error') }; setExpr(''); return }
+    setExpr(e => e + val)
+    setDisplay(d => d === '0' ? val : d + val)
+  }
+
+  return (
+    <div className="h-full flex flex-col p-3" style={{ backgroundColor: C.bg }}>
+      <div className="mb-3 p-3 rounded text-right text-2xl font-mono" style={{ backgroundColor: C.surface, color: C.text, fontFamily: "'Courier New', monospace" }}>{display}</div>
+      <div className="grid grid-cols-4 gap-1 flex-1">
+        {['C', '(', ')', '/', '7', '8', '9', '*', '4', '5', '6', '-', '1', '2', '3', '+', '0', '.', '=', ''].map((b, i) => (
+          b ? <button key={i} onClick={() => btn(b)} className="rounded text-sm font-medium transition-colors" style={{ backgroundColor: ['+', '-', '*', '/', '='].includes(b) ? C.blue : C.surface, color: C.text }}>{b}</button> : <div key={i} />
+        ))}
+      </div>
+    </div>
+  )
+}
+
+/* ── System Monitor App ────────────────────────────────── */
+
+function MonitorApp() {
+  const [cpu, setCpu] = useState(12)
+  const [ram, setRam] = useState(32)
+  const [disk, setDisk] = useState(25)
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setCpu(p => Math.max(1, Math.min(99, p + (Math.random() - 0.5) * 10)))
+      setRam(p => Math.max(10, Math.min(80, p + (Math.random() - 0.5) * 5)))
+    }, 1000)
+    return () => clearInterval(id)
+  }, [])
+
+  function Bar({ value, color }) {
+    return (
+      <div className="w-full h-3 rounded-full overflow-hidden" style={{ backgroundColor: C.overlay }}>
+        <div className="h-full rounded-full transition-all" style={{ width: `${value}%`, backgroundColor: color }} />
+      </div>
+    )
+  }
+
+  return (
+    <div className="h-full p-4 overflow-y-auto" style={{ backgroundColor: C.bg }}>
+      <h3 className="text-sm font-semibold mb-4" style={{ color: C.text }}>System Monitor</h3>
+      <div className="space-y-4">
+        <div>
+          <div className="flex justify-between text-xs mb-1" style={{ color: C.sub }}><span>CPU</span><span>{Math.round(cpu)}%</span></div>
+          <Bar value={cpu} color={cpu > 80 ? C.red : C.green} />
+        </div>
+        <div>
+          <div className="flex justify-between text-xs mb-1" style={{ color: C.sub }}><span>Memory</span><span>{Math.round(ram)}%</span></div>
+          <Bar value={ram} color={ram > 80 ? C.red : C.blue} />
+        </div>
+        <div>
+          <div className="flex justify-between text-xs mb-1" style={{ color: C.sub }}><span>Disk</span><span>{disk}%</span></div>
+          <Bar value={disk} color={C.yellow} />
+        </div>
+        <div className="pt-2 border-t" style={{ borderColor: C.overlay }}>
+          <h4 className="text-xs font-semibold mb-2" style={{ color: C.text }}>Processes</h4>
+          <div className="text-[10px] space-y-1" style={{ color: C.sub }}>
+            <div className="flex justify-between"><span>codix-init</span><span>1.2%</span></div>
+            <div className="flex justify-between"><span>codix-wm</span><span>0.8%</span></div>
+            <div className="flex justify-between"><span>firefox</span><span>3.2%</span></div>
+            <div className="flex justify-between"><span>codix-term</span><span>0.4%</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+/* ── Image Viewer App ──────────────────────────────────── */
+
+function ImageViewerApp() {
+  return (
+    <div className="h-full flex items-center justify-center" style={{ backgroundColor: C.bg }}>
+      <div className="text-center">
+        <Ico.Image s={48} c="text-codix-sub" />
+        <p className="text-xs mt-2" style={{ color: C.sub }}>Image Viewer</p>
+        <p className="text-[10px]" style={{ color: C.overlay }}>Supports PNG, JPG, GIF, SVG</p>
+      </div>
+    </div>
+  )
+}
+
+/* ── File Manager App ──────────────────────────────────── */
+
+function FileManagerApp() {
+  return (
+    <div className="h-full flex" style={{ backgroundColor: C.bg }}>
+      <div className="w-32 p-2 border-r" style={{ borderColor: C.overlay }}>
+        <div className="text-[10px] font-semibold mb-2" style={{ color: C.sub }}>PLACES</div>
+        {['Home', 'Documents', 'Downloads', 'Pictures', 'Desktop'].map(p => (
+          <div key={p} className="flex items-center gap-1 px-1 py-0.5 rounded text-[10px] cursor-pointer hover:bg-codix-overlay/30" style={{ color: C.text }}>
+            <Ico.Folder s={10} c="text-codix-blue" />{p}
+          </div>
+        ))}
+      </div>
+      <div className="flex-1 p-2">
+        <div className="flex gap-2 flex-wrap">
+          {['Documents', 'Downloads', 'Pictures', '.bashrc', 'README.md'].map(f => (
+            <div key={f} className="flex flex-col items-center gap-1 p-2 rounded w-16 cursor-pointer hover:bg-codix-overlay/30">
+              {f.startsWith('.') ? <Ico.File s={24} c="text-codix-sub" /> : <Ico.Folder s={24} c="text-codix-blue" />}
+              <span className="text-[9px] text-center leading-tight" style={{ color: C.text }}>{f}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
 }
 
 /* ── Text Editor App ───────────────────────────────────── */
 
 function TextEditorApp() {
-  const [text, setText] = useState('# Welcome to CodixOS Text Editor\n# Start typing to edit this file.\n\nfunction main() {\n  print("Hello from CodixOS!")\n}\n\nmain()')
   return (
     <div className="h-full flex flex-col" style={{ backgroundColor: C.bg }}>
-      <div className="flex items-center gap-2 px-3 py-1.5 text-xs border-b" style={{ borderColor: C.overlay, backgroundColor: C.surface }}>
-        <span style={{ color: C.text }}>untitled.txt</span>
-        <span style={{ color: C.sub }}>— 8 lines</span>
+      <div className="flex items-center gap-2 px-2 py-1 border-b text-[10px]" style={{ borderColor: C.overlay, color: C.sub }}>
+        <span className="px-1">File</span>
+        <span className="px-1">Edit</span>
+        <span className="px-1">View</span>
       </div>
-      <textarea value={text} onChange={e => setText(e.target.value)} className="flex-1 p-3 font-mono text-xs resize-none outline-none leading-relaxed" style={{ backgroundColor: C.bg, color: C.text, fontFamily: "'Courier New', monospace", tabSize: 2 }} spellCheck={false} />
+      <div className="flex-1 p-2 font-mono text-xs overflow-y-auto" style={{ backgroundColor: C.surface, color: C.text, fontFamily: "'Courier New', monospace" }}>
+        <div style={{ color: C.overlay }}> 1  </div>
+        <div><span style={{ color: C.blue }}>#</span> Welcome to CodixOS</div>
+        <div style={{ color: C.overlay }}> 2  </div>
+        <div><span style={{ color: C.blue }}>##</span> Getting Started</div>
+        <div style={{ color: C.overlay }}> 3  </div>
+        <div>This is a lightweight, terminal-based OS.</div>
+        <div style={{ color: C.overlay }}> 4  </div>
+        <div></div>
+        <div style={{ color: C.overlay }}> 5  </div>
+        <div><span style={{ color: C.green }}>Features:</span></div>
+        <div style={{ color: C.overlay }}> 6  </div>
+        <div>  - Custom kernel</div>
+        <div style={{ color: C.overlay }}> 7  </div>
+        <div>  - Built-in shell</div>
+        <div style={{ color: C.overlay }}> 8  </div>
+        <div>  - Desktop environment</div>
+        <div style={{ color: C.overlay }}> 9  </div>
+        <div>  - Firefox browser</div>
+      </div>
     </div>
   )
 }
@@ -212,6 +413,7 @@ function SettingsApp() {
         <div className="flex justify-between p-2 rounded" style={{ backgroundColor: C.surface }}><span>Kernel</span><span>codix-kernel 1.0.0</span></div>
         <div className="flex justify-between p-2 rounded" style={{ backgroundColor: C.surface }}><span>Shell</span><span>codix-sh 1.0.0</span></div>
         <div className="flex justify-between p-2 rounded" style={{ backgroundColor: C.surface }}><span>Window Manager</span><span>codix-wm 1.0.0</span></div>
+        <div className="flex justify-between p-2 rounded" style={{ backgroundColor: C.surface }}><span>Security Level</span><span style={{ color: C.green }}>High</span></div>
       </div>
     </div>
   )
@@ -221,8 +423,12 @@ function SettingsApp() {
 
 const APPS = {
   terminal: { title: 'Terminal', icon: '>', component: TermApp, w: 580, h: 380, x: 60, y: 40 },
-  files: { title: 'File Manager', icon: '\u{1F4C1}', component: FileManagerApp, w: 400, h: 340, x: 100, y: 60 },
-  editor: { title: 'Text Editor', icon: '\u{270E}', component: TextEditorApp, w: 480, h: 360, x: 160, y: 30 },
+  firefox: { title: 'Firefox', icon: '\u{1F310}', component: FirefoxApp, w: 640, h: 420, x: 120, y: 50 },
+  files: { title: 'File Manager', icon: '\u{1F4C1}', component: FileManagerApp, w: 400, h: 340, x: 180, y: 60 },
+  editor: { title: 'Text Editor', icon: '\u{270E}', component: TextEditorApp, w: 480, h: 360, x: 240, y: 30 },
+  calculator: { title: 'Calculator', icon: '\u{1F5A9}', component: CalculatorApp, w: 240, h: 320, x: 300, y: 70 },
+  monitor: { title: 'System Monitor', icon: '\u{1F4CA}', component: MonitorApp, w: 320, h: 360, x: 80, y: 80 },
+  image: { title: 'Image Viewer', icon: '\u{1F5BC}', component: ImageViewerApp, w: 400, h: 320, x: 160, y: 90 },
   settings: { title: 'Settings', icon: '\u{2699}', component: SettingsApp, w: 340, h: 320, x: 200, y: 50 },
 }
 
@@ -231,7 +437,6 @@ function Window({ id, app, onClose, onFocus, focused, zIndex }) {
   const [size, setSize] = useState({ w: app.w, h: app.h })
   const [maximized, setMaximized] = useState(false)
   const [minimized, setMinimized] = useState(false)
-  const dragRef = useRef(null)
   const prev = useRef({ x: app.x, y: app.y, w: app.w, h: app.h })
 
   function onDragStart(e) {
@@ -259,7 +464,6 @@ function Window({ id, app, onClose, onFocus, focused, zIndex }) {
       className="absolute flex flex-col rounded-lg overflow-hidden border shadow-2xl"
       style={{ left: pos.x, top: pos.y, width: size.w, height: size.h, zIndex, borderColor: focused ? C.blue : C.overlay, backgroundColor: C.surface }}
     >
-      {/* Title bar */}
       <div onMouseDown={onDragStart} onDoubleClick={toggleMax} className="flex items-center justify-between px-3 py-1.5 cursor-move select-none shrink-0" style={{ backgroundColor: focused ? C.surface : C.overlay }}>
         <span className="text-xs font-medium" style={{ color: focused ? C.text : C.sub }}>{app.title}</span>
         <div className="flex items-center gap-1.5">
@@ -268,7 +472,6 @@ function Window({ id, app, onClose, onFocus, focused, zIndex }) {
           <button onClick={onClose} className="w-3 h-3 rounded-full" style={{ backgroundColor: C.red }} />
         </div>
       </div>
-      {/* Content */}
       <div className="flex-1 overflow-hidden">
         <Comp onOutput={() => {}} />
       </div>
@@ -284,6 +487,7 @@ function DesktopDemo() {
   const [focusedWin, setFocusedWin] = useState(null)
   const [clock, setClock] = useState('')
   const [startOpen, setStartOpen] = useState(false)
+  const [booted, setBooted] = useState(false)
 
   useEffect(() => {
     function tick() { const d = new Date(); setClock(d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false })) }
@@ -307,19 +511,27 @@ function DesktopDemo() {
     setFocusedWin(id)
   }
 
-  const openApps = Object.keys(windows).filter(k => windows[k])
+  if (!booted) {
+    return (
+      <div className="relative w-full rounded-xl overflow-hidden border shadow-2xl" style={{ borderColor: C.overlay, height: 500 }}>
+        <BootSequence onComplete={() => setBooted(true)} />
+      </div>
+    )
+  }
 
   return (
     <div className="relative w-full rounded-xl overflow-hidden border shadow-2xl" style={{ borderColor: C.overlay, height: 500 }}>
-      {/* Desktop background */}
       <div className="absolute inset-0" style={{ backgroundColor: C.bg, backgroundImage: `radial-gradient(ellipse at 30% 20%, rgba(137,180,250,0.08) 0%, transparent 50%), radial-gradient(ellipse at 70% 80%, rgba(166,227,161,0.06) 0%, transparent 50%)` }} />
 
       {/* Desktop icons */}
       <div className="absolute top-4 left-4 flex flex-col gap-3 z-[1]">
         {[
           { id: 'terminal', label: 'Terminal', icon: <Ico.Terminal s={28} c="text-codix-green" /> },
+          { id: 'firefox', label: 'Firefox', icon: <Ico.Globe s={28} c="text-codix-peach" /> },
           { id: 'files', label: 'Files', icon: <Ico.Folder s={28} c="text-codix-blue" /> },
           { id: 'editor', label: 'Editor', icon: <Ico.TextEditor s={28} c="text-codix-yellow" /> },
+          { id: 'calculator', label: 'Calculator', icon: <Ico.Calculator s={28} c="text-codix-teal" /> },
+          { id: 'monitor', label: 'Monitor', icon: <Ico.Activity s={28} c="text-codix-magenta" /> },
           { id: 'settings', label: 'Settings', icon: <Ico.Settings s={28} c="text-codix-sub" /> },
         ].map(d => (
           <button key={d.id} onDoubleClick={() => openApp(d.id)} className="flex flex-col items-center gap-1 p-2 rounded-lg hover:bg-codix-overlay/30 transition-colors w-16">
@@ -346,8 +558,12 @@ function DesktopDemo() {
           <div className="p-1">
             {[
               { id: 'terminal', label: 'Terminal', icon: <Ico.Terminal s={16} c="text-codix-green" /> },
+              { id: 'firefox', label: 'Firefox', icon: <Ico.Globe s={16} c="text-codix-peach" /> },
               { id: 'files', label: 'File Manager', icon: <Ico.Folder s={16} c="text-codix-blue" /> },
               { id: 'editor', label: 'Text Editor', icon: <Ico.TextEditor s={16} c="text-codix-yellow" /> },
+              { id: 'calculator', label: 'Calculator', icon: <Ico.Calculator s={16} c="text-codix-teal" /> },
+              { id: 'monitor', label: 'System Monitor', icon: <Ico.Activity s={16} c="text-codix-magenta" /> },
+              { id: 'image', label: 'Image Viewer', icon: <Ico.Image s={16} c="text-codix-blue" /> },
               { id: 'settings', label: 'Settings', icon: <Ico.Settings s={16} c="text-codix-sub" /> },
             ].map(a => (
               <button key={a.id} onClick={() => openApp(a.id)} className="flex items-center gap-2 w-full px-2 py-1.5 rounded text-xs hover:bg-codix-overlay/40 transition-colors" style={{ color: C.text }}>
@@ -360,33 +576,23 @@ function DesktopDemo() {
 
       {/* Taskbar */}
       <div className="absolute bottom-0 left-0 right-0 h-10 flex items-center px-2 border-t z-50" style={{ backgroundColor: C.surface, borderColor: C.overlay }}>
-        {/* Start button */}
         <button onClick={() => setStartOpen(!startOpen)} className="flex items-center gap-1.5 px-2.5 py-1 rounded hover:bg-codix-overlay/40 transition-colors" style={{ backgroundColor: startOpen ? C.overlay : 'transparent' }}>
           <Ico.Grid s={16} c="text-codix-blue" />
           <span className="text-xs font-medium" style={{ color: C.text }}>CodixOS</span>
         </button>
-
-        {/* Divider */}
         <div className="w-px h-5 mx-1.5" style={{ backgroundColor: C.overlay }} />
-
-        {/* Open apps */}
         <div className="flex-1 flex items-center gap-1 overflow-x-auto">
           {Object.keys(APPS).map(id => {
             const isOpen = windows[id]
             const isFocused = focusedWin === id
             return (
               <button key={id} onClick={() => isOpen ? (isFocused ? setFocusedWin(null) : focusApp(id)) : openApp(id)} className="flex items-center gap-1.5 px-2 py-1 rounded text-[11px] transition-colors" style={{ backgroundColor: isFocused ? C.overlay : isOpen ? 'rgba(69,71,90,0.3)' : 'transparent', color: isFocused ? C.text : C.sub }}>
-                {id === 'terminal' && <span className="text-codix-green">{'>'}</span>}
-                {id === 'files' && <span className="text-codix-blue">{'\u{1F4C1}'}</span>}
-                {id === 'editor' && <span className="text-codix-yellow">{'\u{270E}'}</span>}
-                {id === 'settings' && <span className="text-codix-sub">{'\u{2699}'}</span>}
+                <span>{APPS[id].icon}</span>
                 <span className="hidden sm:inline">{APPS[id].title}</span>
               </button>
             )
           })}
         </div>
-
-        {/* System tray */}
         <div className="flex items-center gap-2 px-2 text-[11px]" style={{ color: C.sub }}>
           <Ico.Wifi s={13} c="text-codix-green" />
           <Ico.Battery s={13} />
@@ -397,7 +603,7 @@ function DesktopDemo() {
   )
 }
 
-/* ── Terminal Demo (standalone, for terminal section) ──── */
+/* ── Interactive Terminal (standalone) ─────────────────── */
 
 function InteractiveTerminal() {
   const [lines, setLines] = useState([{ type: 'o', text: 'Welcome to CodixOS Terminal v1.0.0\nType help for available commands.\n' }])
@@ -427,14 +633,12 @@ function InteractiveTerminal() {
   }
 
   return (
-    <div onClick={focus} className="max-w-3xl mx-auto rounded-xl overflow-hidden border shadow-2xl cursor-text" style={{ borderColor: C.overlay, backgroundColor: C.bg }}>
-      <div className="flex items-center gap-2 px-4 py-2" style={{ backgroundColor: C.surface }}>
-        <div className="w-3 h-3 rounded-full" style={{ backgroundColor: C.red }} />
-        <div className="w-3 h-3 rounded-full" style={{ backgroundColor: C.yellow }} />
-        <div className="w-3 h-3 rounded-full" style={{ backgroundColor: C.green }} />
-        <span className="ml-2 text-sm select-none" style={{ color: C.sub }}>codix@codixos — codix-term</span>
+    <div onClick={focus} className="w-full rounded-xl overflow-hidden border shadow-2xl" style={{ borderColor: C.overlay, height: 400 }}>
+      <div className="flex items-center gap-2 px-3 py-2 border-b" style={{ backgroundColor: C.surface, borderColor: C.overlay }}>
+        <div className="flex gap-1.5"><div className="w-3 h-3 rounded-full" style={{ backgroundColor: C.red }} /><div className="w-3 h-3 rounded-full" style={{ backgroundColor: C.yellow }} /><div className="w-3 h-3 rounded-full" style={{ backgroundColor: C.green }} /></div>
+        <span className="text-[11px] ml-2" style={{ color: C.sub }}>codix@codixos: ~</span>
       </div>
-      <div className="p-4 font-mono text-sm leading-relaxed h-80 overflow-y-auto" style={{ fontFamily: "'Courier New', monospace" }}>
+      <div className="flex-1 p-3 font-mono text-xs leading-relaxed overflow-y-auto" style={{ backgroundColor: C.bg, height: 340, fontFamily: "'Courier New', monospace" }}>
         {lines.map((l, i) => (
           <div key={i}>
             {l.type === 'p' ? (
@@ -442,7 +646,7 @@ function InteractiveTerminal() {
             ) : <pre className="whitespace-pre-wrap" style={{ color: C.sub }}>{l.text}</pre>}
           </div>
         ))}
-        <div className="flex items-center">
+        <div className="flex">
           <span style={{ color: C.green }}>codix</span>
           <span style={{ color: C.text }}>@</span>
           <span style={{ color: C.blue }}>codixos</span>
@@ -467,6 +671,7 @@ function Navbar() {
           <div className="hidden md:flex items-center gap-6">
             <a href="#features" className="text-sm hover:text-codix-blue transition-colors" style={{ color: C.sub }}>Features</a>
             <a href="#security" className="text-sm hover:text-codix-blue transition-colors" style={{ color: C.sub }}>Security</a>
+            <a href="#apps" className="text-sm hover:text-codix-blue transition-colors" style={{ color: C.sub }}>Apps</a>
             <a href="#desktop" className="text-sm hover:text-codix-blue transition-colors" style={{ color: C.sub }}>Desktop</a>
             <a href="#terminal" className="text-sm hover:text-codix-blue transition-colors" style={{ color: C.sub }}>Terminal</a>
             <a href="#download" className="text-sm hover:text-codix-blue transition-colors" style={{ color: C.sub }}>Download</a>
@@ -480,6 +685,7 @@ function Navbar() {
         <div className="md:hidden border-t px-4 py-3 space-y-2" style={{ backgroundColor: C.surface, borderColor: C.overlay }}>
           <a href="#features" className="block text-sm py-1" style={{ color: C.sub }} onClick={() => setOpen(false)}>Features</a>
           <a href="#security" className="block text-sm py-1" style={{ color: C.sub }} onClick={() => setOpen(false)}>Security</a>
+          <a href="#apps" className="block text-sm py-1" style={{ color: C.sub }} onClick={() => setOpen(false)}>Apps</a>
           <a href="#desktop" className="block text-sm py-1" style={{ color: C.sub }} onClick={() => setOpen(false)}>Desktop</a>
           <a href="#terminal" className="block text-sm py-1" style={{ color: C.sub }} onClick={() => setOpen(false)}>Terminal</a>
           <a href="#download" className="block text-sm py-1" style={{ color: C.sub }} onClick={() => setOpen(false)}>Download</a>
@@ -551,7 +757,7 @@ export default function HomePage() {
       </section>
 
       {/* Security Features */}
-      <section id="security" className="py-16 px-4" style={{ backgroundColor: 'rgba(49,50,68,0.2)' }}>
+      <section id="security" className="py-16 px-4">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-2xl md:text-3xl font-bold text-center mb-3" style={{ color: C.text }}>Security Features</h2>
           <p className="text-center mb-10 text-sm" style={{ color: C.sub }}>Enterprise-grade security built into the kernel</p>
@@ -563,7 +769,7 @@ export default function HomePage() {
               { ico: <Ico.Settings s={28} c="text-codix-red" />, t: 'System Hardening', d: 'Disable unnecessary services, control ports, blacklist software, and apply security rules.', color: C.red },
               { ico: <Ico.Activity s={28} c="text-codix-magenta" />, t: 'Audit Logging', d: 'Comprehensive event tracking, filter rules, alerting, and security monitoring.', color: C.magenta },
               { ico: <Ico.Terminal s={28} c="text-codix-teal" />, t: 'Process Isolation', d: 'Capability-based sandboxing, namespaces, resource limits, and seccomp filters.', color: C.teal },
-              { ico: <Ico.Wifi s={28} c="text-codix-peach" />, t: 'TLS Encryption', d: 'TLS 1.2/1.3 support. RSA, ECDSA, Ed25519 key pairs. Certificate management.', color: C.peach },
+              { ico: <Ico.Lock s={28} c="text-codix-peach" />, t: 'TLS Encryption', d: 'TLS 1.2/1.3 support. RSA, ECDSA, Ed25519 key pairs. Certificate management.', color: C.peach },
             ].map((f, i) => (
               <div key={i} className="card group">
                 <div className="mb-3 group-hover:scale-110 transition-transform">{f.ico}</div>
@@ -575,11 +781,38 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Pre-installed Apps */}
+      <section id="apps" className="py-16 px-4" style={{ backgroundColor: 'rgba(49,50,68,0.2)' }}>
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-2xl md:text-3xl font-bold text-center mb-3" style={{ color: C.text }}>Pre-installed Applications</h2>
+          <p className="text-center mb-10 text-sm" style={{ color: C.sub }}>Everything you need, ready to use out of the box</p>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {[
+              { ico: <Ico.Globe s={32} c="text-codix-peach" />, name: 'Firefox', desc: 'Web browser', category: 'Internet' },
+              { ico: <Ico.Terminal s={32} c="text-codix-green" />, name: 'Terminal', desc: 'Command line', category: 'System' },
+              { ico: <Ico.Folder s={32} c="text-codix-blue" />, name: 'File Manager', desc: 'Browse files', category: 'System' },
+              { ico: <Ico.TextEditor s={32} c="text-codix-yellow" />, name: 'Text Editor', desc: 'Edit code & text', category: 'Utilities' },
+              { ico: <Ico.Calculator s={32} c="text-codix-teal" />, name: 'Calculator', desc: 'Math & conversions', category: 'Utilities' },
+              { ico: <Ico.Activity s={32} c="text-codix-magenta" />, name: 'System Monitor', desc: 'CPU, RAM, disk', category: 'System' },
+              { ico: <Ico.Image s={32} c="text-codix-blue" />, name: 'Image Viewer', desc: 'View pictures', category: 'Media' },
+              { ico: <Ico.Settings s={32} c="text-codix-sub" />, name: 'Settings', desc: 'System config', category: 'System' },
+            ].map((app, i) => (
+              <div key={i} className="card text-center group hover:scale-105 transition-transform">
+                <div className="flex justify-center mb-3">{app.ico}</div>
+                <h3 className="text-sm font-semibold mb-1" style={{ color: C.text }}>{app.name}</h3>
+                <p className="text-[11px] mb-2" style={{ color: C.sub }}>{app.desc}</p>
+                <span className="text-[10px] px-2 py-0.5 rounded" style={{ backgroundColor: C.overlay, color: C.sub }}>{app.category}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Desktop Environment Demo */}
       <section id="desktop" className="py-16 px-4">
         <div className="max-w-5xl mx-auto">
           <h2 className="text-2xl md:text-3xl font-bold text-center mb-3" style={{ color: C.text }}>Desktop Environment</h2>
-          <p className="text-center mb-8 text-sm" style={{ color: C.sub }}>Double-click icons to open apps. Drag windows. Use the taskbar.</p>
+          <p className="text-center mb-8 text-sm" style={{ color: C.sub }}>Watch it boot, then double-click icons to open apps. Drag windows. Use the taskbar.</p>
           <DesktopDemo />
         </div>
       </section>
@@ -592,7 +825,8 @@ export default function HomePage() {
             Try commands: <code className="px-1.5 py-0.5 rounded text-xs" style={{ backgroundColor: C.surface, color: C.blue }}>help</code>{' '}
             <code className="px-1.5 py-0.5 rounded text-xs" style={{ backgroundColor: C.surface, color: C.blue }}>neofetch</code>{' '}
             <code className="px-1.5 py-0.5 rounded text-xs" style={{ backgroundColor: C.surface, color: C.blue }}>ls</code>{' '}
-            <code className="px-1.5 py-0.5 rounded text-xs" style={{ backgroundColor: C.surface, color: C.blue }}>cat README.md</code>
+            <code className="px-1.5 py-0.5 rounded text-xs" style={{ backgroundColor: C.surface, color: C.blue }}>secureboot</code>{' '}
+            <code className="px-1.5 py-0.5 rounded text-xs" style={{ backgroundColor: C.surface, color: C.blue }}>pkg list</code>
           </p>
           <InteractiveTerminal />
         </div>
@@ -627,6 +861,7 @@ export default function HomePage() {
           <div className="flex items-center gap-6 text-xs" style={{ color: C.sub }}>
             <a href="#features" className="hover:text-codix-blue transition-colors">Features</a>
             <a href="#security" className="hover:text-codix-blue transition-colors">Security</a>
+            <a href="#apps" className="hover:text-codix-blue transition-colors">Apps</a>
             <a href="#desktop" className="hover:text-codix-blue transition-colors">Desktop</a>
             <a href="#terminal" className="hover:text-codix-blue transition-colors">Terminal</a>
             <a href="#download" className="hover:text-codix-blue transition-colors">Download</a>
