@@ -1,0 +1,66 @@
+name: Build CodixOS
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential gcc nasm make xorriso mtools grub-pc-bin libsdl2-dev
+
+    - name: Build kernel
+      run: make kernel
+
+    - name: Build shell and utilities
+      run: ./build-user.sh all
+
+    - name: Build desktop environment
+      run: ./build-user.sh desktop
+
+    - name: Build ISO
+      run: ./build-iso.sh
+
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: codixos-build
+        path: |
+          build/
+          codixos-*.iso
+
+  build-website:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        cache-dependency-path: website/package-lock.json
+
+    - name: Install dependencies
+      working-directory: ./website
+      run: npm ci
+
+    - name: Build website
+      working-directory: ./website
+      run: npm run build
+
+    - name: Export static site
+      working-directory: ./website
+      run: npx next export

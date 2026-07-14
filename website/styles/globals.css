@@ -1,0 +1,93 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&family=Ubuntu+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
+:root {
+  --codix-bg: #1e1e2e;
+  --codix-surface: #313244;
+  --codix-overlay: #45475a;
+  --codix-text: #cdd6f4;
+  --codix-subtext: #a6adc8;
+  --codix-blue: #89b4fa;
+  --codix-green: #a6e3a1;
+  --codix-yellow: #f9e2af;
+  --codix-red: #f38ba8;
+  --codix-magenta: #f5c2e7;
+  --codix-teal: #94e2d5;
+  --codix-peach: #fab387;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Ubuntu', sans-serif;
+  background-color: var(--codix-bg);
+  color: var(--codix-text);
+  line-height: 1.6;
+}
+
+::selection {
+  background-color: var(--codix-blue);
+  color: var(--codix-bg);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--codix-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--codix-overlay);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--codix-blue);
+}
+
+@layer components {
+  .btn-primary {
+    @apply px-6 py-3 bg-codix-blue text-codix-bg font-medium rounded-lg
+           hover:bg-codix-green transition-all duration-300 
+           shadow-lg hover:shadow-codix-blue/30;
+  }
+  
+  .btn-secondary {
+    @apply px-6 py-3 border-2 border-codix-blue text-codix-blue font-medium rounded-lg
+           hover:bg-codix-blue hover:text-codix-bg transition-all duration-300;
+  }
+  
+  .card {
+    @apply bg-codix-surface rounded-xl p-6 border border-codix-overlay
+           hover:border-codix-blue transition-all duration-300;
+  }
+  
+  .terminal-window {
+    @apply bg-codix-bg rounded-lg overflow-hidden shadow-2xl border border-codix-overlay;
+  }
+  
+  .terminal-header {
+    @apply bg-codix-surface px-4 py-2 flex items-center gap-2;
+  }
+  
+  .terminal-dot {
+    @apply w-3 h-3 rounded-full;
+  }
+  
+  .terminal-body {
+    @apply p-4 font-mono text-sm;
+  }
+}
