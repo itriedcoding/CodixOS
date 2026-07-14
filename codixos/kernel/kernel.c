@@ -11,6 +11,11 @@
 #include "filesystem.h"
 #include "security/secure_boot.h"
 #include "security/disk_encrypt.h"
+#include "security/auth.h"
+#include "security/hardening.h"
+#include "security/audit.h"
+#include "security/sandbox.h"
+#include "security/dataprotect.h"
 
 /* VGA text mode buffer */
 volatile uint16_t* const VGA_BUFFER = (uint16_t*)0xB8000;
@@ -430,7 +435,11 @@ void cmd_help() {
     set_color(0x07);
     print("  secureboot - Secure Boot status\n");
     print("  encrypt    - Disk encryption status\n");
-    print("  firewall   - Firewall status\n");
+    print("  auth       - Authentication status\n");
+    print("  hardening  - System hardening status\n");
+    print("  audit      - Audit log status\n");
+    print("  sandbox    - Sandbox status\n");
+    print("  tls        - TLS/encryption status\n");
 }
 
 void cmd_version() {
@@ -471,9 +480,16 @@ void cmd_about() {
     println("  - Package manager for software installation");
     println("  - Terminal-based interface");
     println("  - Lightweight and fast boot");
+    println("  - Pre-installed Firefox browser");
+    println("");
+    println("Security Features:");
     println("  - Secure Boot verification");
     println("  - Full-disk encryption (LUKS)");
-    println("  - Pre-installed Firefox browser");
+    println("  - User authentication with MFA/TOTP");
+    println("  - System hardening controls");
+    println("  - Comprehensive audit logging");
+    println("  - Process sandboxing & isolation");
+    println("  - TLS/SSL encryption in transit");
     println("");
     println("License: MIT");
     println("Author: CodixOS Development Team");
@@ -491,6 +507,11 @@ void kernel_main() {
     /* Initialize security systems */
     secure_boot_init();
     disk_encrypt_init();
+    auth_init();
+    hardening_init();
+    audit_init();
+    sandbox_init();
+    dataprotect_init();
     
     /* Print welcome banner */
     print_banner();
@@ -532,13 +553,16 @@ void kernel_main() {
             secure_boot_status();
         } else if (strcmp(cmd, "encrypt") == 0) {
             disk_encrypt_list_devices();
-        } else if (strcmp(cmd, "firewall") == 0) {
-            set_color(0x0B);
-            print("=== Firewall Status ===\n");
-            set_color(0x07);
-            print("  State: ENABLED\n");
-            print("  Policy: DROP\n");
-            print("  Rules: 12 active\n");
+        } else if (strcmp(cmd, "auth") == 0) {
+            auth_status();
+        } else if (strcmp(cmd, "hardening") == 0) {
+            hardening_status();
+        } else if (strcmp(cmd, "audit") == 0) {
+            audit_status();
+        } else if (strcmp(cmd, "sandbox") == 0) {
+            sandbox_list();
+        } else if (strcmp(cmd, "tls") == 0) {
+            dataprotect_status();
         } else if (strcmp(cmd, "reboot") == 0) {
             println("Rebooting...");
             reboot();

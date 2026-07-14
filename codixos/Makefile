@@ -34,6 +34,11 @@ kernel:
 	$(CC) $(CFLAGS) -c $(KERNEL_SRC)/filesystem.c -o $(BUILD_DIR)/filesystem.o
 	$(CC) $(CFLAGS) -c $(KERNEL_SRC)/security/secure_boot.c -o $(BUILD_DIR)/secure_boot.o
 	$(CC) $(CFLAGS) -c $(KERNEL_SRC)/security/disk_encrypt.c -o $(BUILD_DIR)/disk_encrypt.o
+	$(CC) $(CFLAGS) -c $(KERNEL_SRC)/security/auth.c -o $(BUILD_DIR)/auth.o
+	$(CC) $(CFLAGS) -c $(KERNEL_SRC)/security/hardening.c -o $(BUILD_DIR)/hardening.o
+	$(CC) $(CFLAGS) -c $(KERNEL_SRC)/security/audit.c -o $(BUILD_DIR)/audit.o
+	$(CC) $(CFLAGS) -c $(KERNEL_SRC)/security/sandbox.c -o $(BUILD_DIR)/sandbox.o
+	$(CC) $(CFLAGS) -c $(KERNEL_SRC)/security/dataprotect.c -o $(BUILD_DIR)/dataprotect.o
 	$(LD) $(LDFLAGS) -o $(BUILD_DIR)/codixos.bin $(BUILD_DIR)/*.o
 	@echo "[BUILD] Kernel compiled successfully!"
 
