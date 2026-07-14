@@ -6,7 +6,12 @@
 #ifndef SECURE_BOOT_H
 #define SECURE_BOOT_H
 
-#include "../kernel/kernel.h"
+/* Type definitions (from kernel.h) */
+typedef unsigned char uint8_t;
+typedef unsigned short uint16_t;
+typedef unsigned int uint32_t;
+typedef unsigned long long uint64_t;
+typedef uint32_t size_t;
 
 /* Secure Boot states */
 #define SECURE_BOOT_DISABLED     0

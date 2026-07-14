@@ -6,7 +6,12 @@
 #ifndef DISK_ENCRYPT_H
 #define DISK_ENCRYPT_H
 
-#include "../kernel/kernel.h"
+/* Type definitions (from kernel.h) */
+typedef unsigned char uint8_t;
+typedef unsigned short uint16_t;
+typedef unsigned int uint32_t;
+typedef unsigned long long uint64_t;
+typedef uint32_t size_t;
 
 /* Encryption states */
 #define CRYPT_STATE_NONE        0

@@ -32,6 +32,8 @@ kernel:
 	$(CC) $(CFLAGS) -c $(KERNEL_SRC)/interrupt.c -o $(BUILD_DIR)/interrupt.o
 	$(CC) $(CFLAGS) -c $(KERNEL_SRC)/process.c -o $(BUILD_DIR)/process.o
 	$(CC) $(CFLAGS) -c $(KERNEL_SRC)/filesystem.c -o $(BUILD_DIR)/filesystem.o
+	$(CC) $(CFLAGS) -c $(KERNEL_SRC)/security/secure_boot.c -o $(BUILD_DIR)/secure_boot.o
+	$(CC) $(CFLAGS) -c $(KERNEL_SRC)/security/disk_encrypt.c -o $(BUILD_DIR)/disk_encrypt.o
 	$(LD) $(LDFLAGS) -o $(BUILD_DIR)/codixos.bin $(BUILD_DIR)/*.o
 	@echo "[BUILD] Kernel compiled successfully!"
 
