@@ -146,7 +146,7 @@ function BootSequence({ onComplete }) {
       }
     }, 150)
     return () => clearInterval(timer)
-  }, [])
+  }, [onComplete])
 
   return (
     <div className="w-full h-full flex flex-col justify-center p-6 font-mono text-xs" style={{ backgroundColor: '#000', fontFamily: "'Courier New', monospace" }}>
@@ -249,13 +249,54 @@ function FirefoxApp() {
 
 /* ── Calculator App ────────────────────────────────────── */
 
+function safeCalc(expr) {
+  try {
+    const tokens = expr.match(/(\d+\.?\d*|[+\-*/()])/g)
+    if (!tokens) return NaN
+    let pos = 0
+    function parseExpr() {
+      let left = parseTerm()
+      while (pos < tokens.length && (tokens[pos] === '+' || tokens[pos] === '-')) {
+        const op = tokens[pos++]
+        const right = parseTerm()
+        left = op === '+' ? left + right : left - right
+      }
+      return left
+    }
+    function parseTerm() {
+      let left = parseFactor()
+      while (pos < tokens.length && (tokens[pos] === '*' || tokens[pos] === '/')) {
+        const op = tokens[pos++]
+        const right = parseFactor()
+        left = op === '*' ? left * right : left / right
+      }
+      return left
+    }
+    function parseFactor() {
+      if (tokens[pos] === '(') {
+        pos++
+        const result = parseExpr()
+        pos++
+        return result
+      }
+      return parseFloat(tokens[pos++])
+    }
+    return parseExpr()
+  } catch { return NaN }
+}
+
 function CalculatorApp() {
   const [display, setDisplay] = useState('0')
   const [expr, setExpr] = useState('')
 
   function btn(val) {
     if (val === 'C') { setDisplay('0'); setExpr(''); return }
-    if (val === '=') { try { setDisplay(String(eval(expr))) } catch { setDisplay('Error') }; setExpr(''); return }
+    if (val === '=') {
+      const result = safeCalc(expr)
+      setDisplay(isNaN(result) ? 'Error' : String(result))
+      setExpr('')
+      return
+    }
     setExpr(e => e + val)
     setDisplay(d => d === '0' ? val : d + val)
   }
