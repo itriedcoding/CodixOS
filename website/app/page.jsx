@@ -14,15 +14,12 @@ import {
   Shield,
   Package,
   ChevronDown,
-  ExternalLink,
   Menu,
   X
 } from 'lucide-react'
 
-// Terminal Demo Component
 function TerminalDemo() {
-  const [lines, setLines] = useState<string[]>([])
-  const [currentInput, setCurrentInput] = useState('')
+  const [lines, setLines] = useState([])
   const [isTyping, setIsTyping] = useState(true)
 
   const demoCommands = [
@@ -54,7 +51,7 @@ function TerminalDemo() {
         <div className="terminal-dot bg-codix-green"></div>
         <span className="ml-2 text-codix-subtext text-sm">codix@codixos:~</span>
       </div>
-      <div className="terminal-body h-80 overflow-y-auto">
+      <div className="terminal-body h-80 overflow-y-auto font-mono text-sm">
         <div className="text-codix-green mb-2">
           {`        _____      _               ____   _____ `}
         </div>
@@ -74,7 +71,7 @@ function TerminalDemo() {
           {`       \\_____\\___/|_|\\___/|_|     |____/|_____/ `}
         </div>
         <div className="text-codix-subtext mb-4">
-          Welcome to CodixOS v1.0.0 - Type 'help' for commands
+          Welcome to CodixOS v1.0.0 - Type help for commands
         </div>
         {lines.map((line, i) => (
           <div key={i} className="mb-1">
@@ -102,7 +99,7 @@ function TerminalDemo() {
         {!isTyping && (
           <div className="flex items-center">
             <span className="text-codix-blue">$</span>
-            <span className="ml-2 animate-pulse">▌</span>
+            <span className="ml-2 animate-pulse">|</span>
           </div>
         )}
       </div>
@@ -110,12 +107,7 @@ function TerminalDemo() {
   )
 }
 
-// Feature Card Component
-function FeatureCard({ icon: Icon, title, description }: { 
-  icon: any, 
-  title: string, 
-  description: string 
-}) {
+function FeatureCard({ icon: Icon, title, description }) {
   return (
     <motion.div 
       className="card group"
@@ -131,13 +123,7 @@ function FeatureCard({ icon: Icon, title, description }: {
   )
 }
 
-// Stat Card Component
-function StatCard({ icon: Icon, label, value, color }: {
-  icon: any,
-  label: string,
-  value: string,
-  color: string
-}) {
+function StatCard({ icon: Icon, label, value, color }) {
   return (
     <div className="text-center">
       <div className={`text-3xl mb-2 ${color}`}>
@@ -149,7 +135,6 @@ function StatCard({ icon: Icon, label, value, color }: {
   )
 }
 
-// Navigation
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
 
@@ -168,7 +153,7 @@ function Navbar() {
             <a href="#download" className="text-codix-subtext hover:text-codix-blue transition-colors">Download</a>
             <a href="#docs" className="text-codix-subtext hover:text-codix-blue transition-colors">Docs</a>
             <a 
-              href="https://github.com/codixos" 
+              href="https://github.com/itriedcoding/CodixOS" 
               target="_blank" 
               rel="noopener noreferrer"
               className="text-codix-subtext hover:text-codix-blue transition-colors"
@@ -199,7 +184,6 @@ function Navbar() {
               <a href="#features" className="block text-codix-subtext hover:text-codix-blue">Features</a>
               <a href="#demo" className="block text-codix-subtext hover:text-codix-blue">Demo</a>
               <a href="#download" className="block text-codix-subtext hover:text-codix-blue">Download</a>
-              <a href="#docs" className="block text-codix-subtext hover:text-codix-blue">Docs</a>
               <a href="#download" className="block btn-primary text-center">Download</a>
             </div>
           </motion.div>
@@ -209,11 +193,9 @@ function Navbar() {
   )
 }
 
-// Hero Section
 function Hero() {
   return (
     <section className="min-h-screen flex items-center justify-center relative overflow-hidden pt-16">
-      {/* Background Effects */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-codix-blue/20 rounded-full blur-3xl"></div>
         <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-codix-green/20 rounded-full blur-3xl"></div>
@@ -285,7 +267,6 @@ function Hero() {
   )
 }
 
-// Features Section
 function Features() {
   const features = [
     {
@@ -353,7 +334,6 @@ function Features() {
   )
 }
 
-// Demo Section
 function Demo() {
   return (
     <section id="demo" className="py-20">
@@ -376,8 +356,7 @@ function Demo() {
   )
 }
 
-// Download Section
-function Download() {
+function DownloadSection() {
   const downloads = [
     { name: 'ISO Image', description: 'Bootable ISO for VMs and live USB', size: '128 MB', icon: HardDrive },
     { name: 'Source Code', description: 'Build from source', size: '15 MB', icon: Github },
@@ -422,7 +401,6 @@ function Download() {
   )
 }
 
-// Footer
 function Footer() {
   return (
     <footer className="py-12 border-t border-codix-overlay">
@@ -450,7 +428,7 @@ function Footer() {
           <div>
             <h4 className="font-semibold mb-4 text-codix-text">Community</h4>
             <ul className="space-y-2 text-codix-subtext text-sm">
-              <li><a href="https://github.com/codixos" className="hover:text-codix-blue transition-colors">GitHub</a></li>
+              <li><a href="https://github.com/itriedcoding/CodixOS" className="hover:text-codix-blue transition-colors">GitHub</a></li>
               <li><a href="#" className="hover:text-codix-blue transition-colors">Discord</a></li>
               <li><a href="#" className="hover:text-codix-blue transition-colors">Forum</a></li>
             </ul>
@@ -474,7 +452,6 @@ function Footer() {
   )
 }
 
-// Main Page
 export default function Home() {
   return (
     <main className="min-h-screen">
@@ -482,7 +459,7 @@ export default function Home() {
       <Hero />
       <Features />
       <Demo />
-      <Download />
+      <DownloadSection />
       <Footer />
     </main>
   )

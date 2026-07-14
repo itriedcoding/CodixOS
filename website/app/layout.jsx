@@ -1,7 +1,6 @@
-import type { Metadata } from 'next'
 import '../styles/globals.css'
 
-export const metadata: Metadata = {
+export const metadata = {
   title: 'CodixOS - Lightweight Terminal Operating System',
   description: 'A lightweight, terminal-based operating system designed for simplicity and ease of use. Features custom kernel, shell, package manager, and desktop environment.',
   keywords: ['operating system', 'terminal', 'linux', 'lightweight', 'codixos', 'custom os'],
@@ -23,8 +22,6 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: {
-  children: React.ReactNode
 }) {
   return (
     <html lang="en">
