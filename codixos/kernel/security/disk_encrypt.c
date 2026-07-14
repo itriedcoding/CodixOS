@@ -29,8 +29,10 @@ extern void print_int(int num);
 extern void putchar(char c);
 extern void memset(void* dest, int c, size_t n);
 extern void memcpy(void* dest, const void* src, size_t n);
+extern int memcmp(const void* s1, const void* s2, size_t n);
 extern int strcmp(const char* s1, const char* s2);
 extern void strcpy(char* dest, const char* src);
+extern size_t strlen(const char* str);
 
 /* Simple pseudo-random number generator */
 static uint32_t rng_state = 0x12345678;

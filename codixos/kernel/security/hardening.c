@@ -27,6 +27,7 @@ extern void memcpy(void* dest, const void* src, size_t n);
 extern int strcmp(const char* s1, const char* s2);
 extern void strcpy(char* dest, const char* src);
 extern size_t strlen(const char* str);
+extern size_t strlen(const char* str);
 
 /* Find service by name */
 static service_t* find_service(const char* name) {

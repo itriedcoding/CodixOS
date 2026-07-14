@@ -26,6 +26,7 @@ extern void memset(void* dest, int c, size_t n);
 extern void memcpy(void* dest, const void* src, size_t n);
 extern int strcmp(const char* s1, const char* s2);
 extern void strcpy(char* dest, const char* src);
+extern size_t strlen(const char* str);
 
 /* Find sandbox by ID */
 static sandbox_t* find_sandbox(uint32_t id) {

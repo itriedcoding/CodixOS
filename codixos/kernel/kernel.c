@@ -73,6 +73,17 @@ void* memcpy(void* dest, const void* src, size_t n) {
     return dest;
 }
 
+int memcmp(const void* s1, const void* s2, size_t n) {
+    const uint8_t* a = (const uint8_t*)s1;
+    const uint8_t* b = (const uint8_t*)s2;
+    while (n--) {
+        if (*a != *b) return *a - *b;
+        a++;
+        b++;
+    }
+    return 0;
+}
+
 /* VGA functions */
 void clear_screen() {
     for (int i = 0; i < VGA_WIDTH * VGA_HEIGHT; i++) {
@@ -577,11 +588,7 @@ void kernel_main(uint32_t magic, void* mboot_info) {
     }
 }
 
-/* Placeholder functions */
-void init_interrupts() {}
-void init_memory() {}
-void init_filesystem() {}
-void init_processes() {}
+/* Reboot and halt */
 void reboot() {
     while (1) {
         __asm__ __volatile__("cli; hlt");

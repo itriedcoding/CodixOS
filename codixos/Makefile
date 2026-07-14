@@ -4,15 +4,15 @@ CC = i686-elf-gcc
 AS = nasm
 LD = i686-elf-gcc
 
-CFLAGS = -Wall -Wextra -O2 -ffreestanding -nostdlib -nostdinc -fno-builtin -fno-stack-protector -nostartfiles -nodefaultlibs -m32
+CFLAGS = -Wall -Wextra -O2 -ffreestanding -nostdlib -nostdinc -fno-builtin -fno-stack-protector -nostartfiles -nodefaultlibs -m32 -I.
 ASFLAGS = -f elf32
 LDFLAGS = -T kernel/linker.ld -nostdlib -ffreestanding -m32 -lgcc
 
 BUILD_DIR = build
 
-.PHONY: all clean kernel boot iso
+.PHONY: all clean
 
-all: clean boot kernel iso
+all: clean kernel iso
 
 boot:
 	@echo "[BUILD] Assembling boot stage..."

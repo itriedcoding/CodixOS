@@ -45,6 +45,7 @@ typedef int32_t ssize_t;
 size_t strlen(const char* str);
 void strcpy(char* dest, const char* src);
 int strcmp(const char* s1, const char* s2);
+int memcmp(const void* s1, const void* s2, size_t n);
 void strcat(char* dest, const char* src);
 
 /* Memory functions */
