@@ -66,7 +66,7 @@ function processCommand(input) {
   const cmd = parts[0]; const args = parts.slice(1)
   if (!cmd) return ''
   if (cmd === 'cd') { const t = args[0] ? resolvePath(args[0]) : '~'; if (FILESYSTEM[t]?.type === 'dir') { cwd = t; return null }; return `cd: ${args[0]}: No such directory` }
-  if (cmd === 'help') return 'Commands: help, neofetch, ls, cat, pwd, whoami, hostname, uname, date, uptime, free, ps, df, echo, clear, pkg, theme, secureboot, encrypt, exit'
+  if (cmd === 'help') return 'Commands: help, neofetch, ls, cat, pwd, whoami, hostname, uname, date, uptime, free, ps, df, echo, clear, pkg, theme, secureboot, encrypt, auth, hardening, audit, sandbox, tls, exit'
   if (cmd === 'neofetch') return `       _____      _               ____   _____ \n      / ____|    | |             |  _ \\ / ____|\n     | |     ___ | | ___  _ __   | |_) | (___  \n     | |    / _ \\| |/ _ \\| '__|  |  _ < \\___ \\ \n     | |___| (_) | | (_) | |     | |_) |____) |\n      \\_____|\\___/|_|\\___/|_|     |____/|_____/ \n\n${C.blue}OS${C.text}:       CodixOS 1.0.0 x86_64\n${C.blue}Kernel${C.text}:   codix-kernel 1.0.0\n${C.blue}Shell${C.text}:    codix-sh 1.0.0\n${C.blue}CPU${C.text}:      Virtual CPU @ 2.4GHz\n${C.blue}Memory${C.text}:   32MiB / 256MiB\n\n${C.red}███${C.green}███${C.yellow}███${C.blue}███${C.magenta}███${C.teal}███${C.text}`
   if (cmd === 'ls') { const t = args[0] ? resolvePath(args[0]) : cwd; const e = FILESYSTEM[t]; if (!e) return `ls: cannot access '${args[0]}': No such file or directory`; if (e.type !== 'dir') return args[0]; return e.children.map(c => { const cp = t === '~' ? `~/${c}` : `${t}/${c}`; return FILESYSTEM[cp]?.type === 'dir' ? `${C.blue}${c}/${C.text}` : c }).join('  ') }
   if (cmd === 'cat') { if (!args[0]) return 'cat: missing operand'; const p = resolvePath(args[0]); const e = FILESYSTEM[p]; if (!e) return `cat: ${args[0]}: No such file`; if (e.type === 'dir') return `cat: ${args[0]}: Is a directory`; return e.content }
@@ -86,6 +86,11 @@ function processCommand(input) {
   if (cmd === 'pkg') { if (args[0] === 'list') return 'Installed:\n  codix-kernel 1.0.0\n  codix-sh 1.0.0\n  codix-term 1.0.0\n  codix-pkg 1.0.0'; return 'Usage: pkg <install|list>' }
   if (cmd === 'secureboot') return `\n${C.teal}=== Secure Boot Status ===${C.text}\n\n  State:             ${C.green}ENABLED${C.text}\n  Trusted Keys:      1\n\n  ${C.teal}Boot Chain Verification:${C.text}\n    Firmware:        ${C.green}VERIFIED${C.text}\n    Bootloader:      ${C.green}VERIFIED${C.text}\n    Kernel:          ${C.green}VERIFIED${C.text}\n    Initrd:          ${C.yellow}NOT VERIFIED${C.text}\n\n  Overall Status:    ${C.green}SECURE${C.text}\n`
   if (cmd === 'encrypt') return `\n${C.teal}=== Encrypted Devices ===${C.text}\n\n  DEVICE               MAPPER         CIPHER     KEY      STATUS\n  ------               ------         ------     ---      ------\n  /dev/sda2            codix-data     aes-xts    256      ${C.green}UNLOCKED${C.text}\n  /dev/sda3            -              aes-xts    256      ${C.yellow}LOCKED${C.text}\n`
+  if (cmd === 'auth') return `\n${C.teal}=== Authentication Status ===${C.text}\n\n  Users:       3\n  Sessions:    2\n  MFA Required: Yes\n\n  Password Policy:\n    Min Length:      12\n    Expiry Days:     90\n    Max Attempts:    5\n    Lockout (sec):   300\n`
+  if (cmd === 'hardening') return `\n${C.teal}=== System Hardening Status ===${C.text}\n\n  Level:           ${C.green}HIGH${C.text}\n  Security Score:  ${C.green}92${C.text}/100\n\n  Components:\n    Firewall:      ${C.green}ENABLED${C.text}\n    SELinux:       ${C.green}ENABLED${C.text}\n    Audit:         ${C.green}ENABLED${C.text}\n    Ptrace Scope:  2\n\n  Services:  8/17 enabled\n  Open Ports: 5\n`
+  if (cmd === 'audit') return `\n${C.teal}=== Audit System Status ===${C.text}\n\n  Enabled:         Yes\n  Level Filter:    WARNING\n  Total Events:    1,247\n  Security Events: 23\n  Rules:           8\n  Recipients:      2\n`
+  if (cmd === 'sandbox') return `\n${C.teal}=== Sandboxes ===${C.text}\n\n  ID   NAME                 TYPE        STATUS\n  ---  ----                 ----        ------\n  1    web-browser          container   RUNNING\n  2    terminal-app         namespace   RUNNING\n  3    file-manager         chroot      STOPPED\n`
+  if (cmd === 'tls') return `\n${C.teal}=== Data Protection Status ===${C.text}\n\n  Key Pairs:    2\n  Certificates: 3\n  Connections:  4\n\n  TLS Configuration:\n    Min Version:   1.2\n    Max Version:   1.3\n    Client Certs:  Optional\n    Hostname Vfy:  Enabled\n`
   return `codix: command not found: ${cmd}\nType 'help' for available commands.`
 }
 
@@ -461,6 +466,7 @@ function Navbar() {
           <a href="#" className="flex items-center gap-2"><Ico.Terminal s={24} c="text-codix-blue" /><span className="text-lg font-bold" style={{ color: C.text }}>CodixOS</span></a>
           <div className="hidden md:flex items-center gap-6">
             <a href="#features" className="text-sm hover:text-codix-blue transition-colors" style={{ color: C.sub }}>Features</a>
+            <a href="#security" className="text-sm hover:text-codix-blue transition-colors" style={{ color: C.sub }}>Security</a>
             <a href="#desktop" className="text-sm hover:text-codix-blue transition-colors" style={{ color: C.sub }}>Desktop</a>
             <a href="#terminal" className="text-sm hover:text-codix-blue transition-colors" style={{ color: C.sub }}>Terminal</a>
             <a href="#download" className="text-sm hover:text-codix-blue transition-colors" style={{ color: C.sub }}>Download</a>
@@ -473,6 +479,7 @@ function Navbar() {
       {open && (
         <div className="md:hidden border-t px-4 py-3 space-y-2" style={{ backgroundColor: C.surface, borderColor: C.overlay }}>
           <a href="#features" className="block text-sm py-1" style={{ color: C.sub }} onClick={() => setOpen(false)}>Features</a>
+          <a href="#security" className="block text-sm py-1" style={{ color: C.sub }} onClick={() => setOpen(false)}>Security</a>
           <a href="#desktop" className="block text-sm py-1" style={{ color: C.sub }} onClick={() => setOpen(false)}>Desktop</a>
           <a href="#terminal" className="block text-sm py-1" style={{ color: C.sub }} onClick={() => setOpen(false)}>Terminal</a>
           <a href="#download" className="block text-sm py-1" style={{ color: C.sub }} onClick={() => setOpen(false)}>Download</a>
@@ -530,14 +537,37 @@ export default function HomePage() {
               { ico: <Ico.Terminal s={24} c="text-codix-blue" />, t: 'Terminal-First', d: '40+ built-in commands. Tab completion. Command history.' },
               { ico: <Ico.Package s={24} c="text-codix-blue" />, t: 'Package Manager', d: 'Install software with codix-pkg. Simple dependency resolution.' },
               { ico: <Ico.Monitor s={24} c="text-codix-blue" />, t: 'Desktop Environment', d: 'Optional GUI with window manager and built-in applications.' },
-              { ico: <Ico.Shield s={24} c="text-codix-green" />, t: 'Secure Boot', d: 'Verify digital signatures of firmware and bootloaders for trusted startup.' },
-              { ico: <Ico.Shield s={24} c="text-codix-yellow" />, t: 'Full-Disk Encryption', d: 'LUKS-based encryption. AES-256-XTS. Protect your data at rest.' },
-              { ico: <Ico.HardDrive s={24} c="text-codix-blue" />, t: 'Bootable ISO', d: 'Create a bootable USB. Run live without installation.' },
               { ico: <Ico.Terminal s={24} c="text-codix-peach" />, t: 'Firefox Pre-installed', d: 'Full-featured web browser ready to use out of the box.' },
+              { ico: <Ico.HardDrive s={24} c="text-codix-blue" />, t: 'Bootable ISO', d: 'Create a bootable USB. Run live without installation.' },
             ].map((f, i) => (
               <div key={i} className="card group">
                 <div className="mb-3 group-hover:text-codix-green transition-colors">{f.ico}</div>
                 <h3 className="text-base font-semibold mb-1" style={{ color: C.text }}>{f.t}</h3>
+                <p className="text-sm leading-relaxed" style={{ color: C.sub }}>{f.d}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Security Features */}
+      <section id="security" className="py-16 px-4" style={{ backgroundColor: 'rgba(49,50,68,0.2)' }}>
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-2xl md:text-3xl font-bold text-center mb-3" style={{ color: C.text }}>Security Features</h2>
+          <p className="text-center mb-10 text-sm" style={{ color: C.sub }}>Enterprise-grade security built into the kernel</p>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {[
+              { ico: <Ico.Shield s={28} c="text-codix-green" />, t: 'Secure Boot', d: 'Verify digital signatures of firmware and bootloaders. Trusted boot chain from hardware to OS.', color: C.green },
+              { ico: <Ico.HardDrive s={28} c="text-codix-yellow" />, t: 'Full-Disk Encryption', d: 'LUKS-based AES-256-XTS encryption. Protect data at rest with strong cryptographic algorithms.', color: C.yellow },
+              { ico: <Ico.Shield s={28} c="text-codix-blue" />, t: 'User Authentication', d: 'Password policies, MFA/TOTP support, account lockout, and session management.', color: C.blue },
+              { ico: <Ico.Settings s={28} c="text-codix-red" />, t: 'System Hardening', d: 'Disable unnecessary services, control ports, blacklist software, and apply security rules.', color: C.red },
+              { ico: <Ico.Activity s={28} c="text-codix-magenta" />, t: 'Audit Logging', d: 'Comprehensive event tracking, filter rules, alerting, and security monitoring.', color: C.magenta },
+              { ico: <Ico.Terminal s={28} c="text-codix-teal" />, t: 'Process Isolation', d: 'Capability-based sandboxing, namespaces, resource limits, and seccomp filters.', color: C.teal },
+              { ico: <Ico.Wifi s={28} c="text-codix-peach" />, t: 'TLS Encryption', d: 'TLS 1.2/1.3 support. RSA, ECDSA, Ed25519 key pairs. Certificate management.', color: C.peach },
+            ].map((f, i) => (
+              <div key={i} className="card group">
+                <div className="mb-3 group-hover:scale-110 transition-transform">{f.ico}</div>
+                <h3 className="text-base font-semibold mb-1" style={{ color: f.color }}>{f.t}</h3>
                 <p className="text-sm leading-relaxed" style={{ color: C.sub }}>{f.d}</p>
               </div>
             ))}
@@ -596,6 +626,7 @@ export default function HomePage() {
           <div className="flex items-center gap-2"><Ico.Terminal s={18} c="text-codix-blue" /><span className="text-sm font-semibold" style={{ color: C.text }}>CodixOS</span></div>
           <div className="flex items-center gap-6 text-xs" style={{ color: C.sub }}>
             <a href="#features" className="hover:text-codix-blue transition-colors">Features</a>
+            <a href="#security" className="hover:text-codix-blue transition-colors">Security</a>
             <a href="#desktop" className="hover:text-codix-blue transition-colors">Desktop</a>
             <a href="#terminal" className="hover:text-codix-blue transition-colors">Terminal</a>
             <a href="#download" className="hover:text-codix-blue transition-colors">Download</a>
