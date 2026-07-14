@@ -74,9 +74,31 @@ function processCommand(input, cwd) {
   let newCwd = cwd
   if (!cmd) return { output: '', newCwd }
   if (cmd === 'cd') { const t = args[0] ? resolvePath(args[0], cwd) : '~'; if (FILESYSTEM[t]?.type === 'dir') { newCwd = t; return { output: null, newCwd } }; return { output: `cd: ${args[0]}: No such directory`, newCwd } }
-  if (cmd === 'help') return { output: `Commands:\n  System:    help, clear, echo, exit, reboot\n  Files:     ls, cat, pwd, cd, mkdir, cp, mv, rm\n  Info:      neofetch, whoami, hostname, uname, date, uptime\n  Resources: free, ps, df\n  Packages:  pkg install, pkg list, pkg update\n  Security:  secureboot, encrypt, auth, hardening, audit, sandbox, tls\n  Apps:      firefox, calculator, files, editor, settings\n  Theme:     theme`, newCwd }
+  if (cmd === 'help') return { output: `Commands:\n  System:    help, clear, echo, exit, reboot, top, uptime, id, which, man\n  Files:     ls, cat, pwd, cd, mkdir, cp, mv, rm, touch\n  Info:      neofetch, whoami, hostname, uname, date\n  Resources: free, ps, df\n  Packages:  pkg install, pkg list, pkg update\n  Security:  secureboot, encrypt, auth, hardening, audit, sandbox, tls\n  Apps:      firefox, calculator, files, editor, settings, monitor\n  Theme:     theme, history`, newCwd }
   const o = (text) => ({ output: text, newCwd })
-  if (cmd === 'neofetch') return o(`${C.blue}        _____      _               ____   _____ ${C.text}\n${C.blue}       / ____|    | |             |  _ \\ / ____|${C.text}\n${C.blue}      | |     ___ | | ___  _ __   | |_) | (___  ${C.text}\n${C.blue}      | |    / _ \\| |/ _ \\| '__|  |  _ < \\___ \\ ${C.text}\n${C.blue}      | |___| (_) | | (_) | |     | |_) |____) |${C.text}\n${C.blue}       \\_____\\___/|_|\\___/|_|     |____/|_____/ ${C.text}\n\n${C.blue}OS${C.text}:       CodixOS 1.0.0 x86_64\n${C.blue}Kernel${C.text}:   codix-kernel 1.0.0\n${C.blue}Shell${C.text}:    codix-sh 1.0.0\n${C.blue}DE${C.text}:      codix-desktop 1.0.0\n${C.blue}CPU${C.text}:      Virtual CPU @ 2.4GHz\n${C.blue}Memory${C.text}:   32MiB / 256MiB\n${C.blue}Disk${C.text}:     128MB / 512MB\n${C.blue}Uptime${C.text}:   4h 23m\n\n${C.blue}Apps${C.text}:     Firefox, Terminal, File Manager,\n           Text Editor, Calculator, Settings,\n           System Monitor, Image Viewer\n\n${C.red}███${C.green}███${C.yellow}███${C.blue}███${C.magenta}███${C.teal}███${C.text}`)
+  if (cmd === 'neofetch') return o(
+    `${C.blue}         ██████╗ ███████╗██╗  ██╗${C.text}   ${C.blue}codix${C.text}@${C.blue}codixos${C.text}\n` +
+    `${C.blue}        ██╔════╝ ██╔════╝╚██╗██╔╝${C.text}   ${C.teal}-------------------${C.text}\n` +
+    `${C.teal}        ██║  ███╗█████╗   ╚███╔╝ ${C.text}   ${C.blue}OS${C.text}:       CodixOS 1.0.0 x86_64\n` +
+    `${C.teal}        ██║   ██║██╔══╝   ██╔██╗ ${C.text}   ${C.blue}Host${C.text}:     CodixOS Virtual Machine\n` +
+    `${C.green}        ╚██████╔╝███████╗██╔╝ ██╗${C.text}   ${C.blue}Kernel${C.text}:   codix-kernel 1.0.0\n` +
+    `${C.green}         ╚═════╝ ╚══════╝╚═╝  ╚═╝${C.text}   ${C.blue}Uptime${C.text}:   4 hours, 23 mins\n` +
+    `${C.magenta}                              ${C.text}   ${C.blue}Packages${C.text}:  8 (codix-pkg)\n` +
+    `${C.magenta}       ${C.red}███${C.green}███${C.yellow}███${C.blue}███${C.magenta}███${C.teal}███${C.peach}███${C.text}   ${C.blue}Shell${C.text}:    codix-sh 1.0.0\n` +
+    `                              ${C.blue}DE${C.text}:      codix-desktop 1.0.0\n` +
+    `                              ${C.blue}WM${C.text}:      codix-wm (Wayland)\n` +
+    `                              ${C.blue}Terminal${C.text}: codix-term 1.0.0\n` +
+    `                              ${C.blue}CPU${C.text}:      Virtual CPU @ 2.4GHz\n` +
+    `                              ${C.blue}Memory${C.text}:   32MiB / 256MiB\n` +
+    `                              ${C.blue}Disk${C.text}:     128MB / 512MB (25%)\n` +
+    `                              ${C.blue}GPU${C.text}:      VirtIO GPU\n` +
+    `                              ${C.blue}Resolution${C.text}: 1920x1080\n` +
+    `                              ${C.blue}Theme${C.text}:    Catppuccin Mocha\n` +
+    `                              ${C.blue}Font${C.text}:     Ubuntu Mono 12pt\n` +
+    `                              ${C.blue}Security${C.text}: Secure Boot + LUKS2\n` +
+    `\n` +
+    `  ${C.red}███${C.text}  ${C.peach}███${C.text}  ${C.yellow}███${C.text}  ${C.green}███${C.text}  ${C.teal}███${C.text}  ${C.blue}███${C.text}  ${C.magenta}███${C.text}`
+  )
   if (cmd === 'ls') { const t = args[0] ? resolvePath(args[0], cwd) : cwd; const e = FILESYSTEM[t]; if (!e) return o(`ls: cannot access '${args[0]}': No such file or directory`); if (e.type !== 'dir') return o(args[0]); return o(e.children.map(c => { const cp = t === '~' ? `~/${c}` : `${t}/${c}`; return FILESYSTEM[cp]?.type === 'dir' ? `${C.blue}${c}/${C.text}` : c }).join('  ')) }
   if (cmd === 'cat') { if (!args[0]) return o('cat: missing operand'); const p = resolvePath(args[0], cwd); const e = FILESYSTEM[p]; if (!e) return o(`cat: ${args[0]}: No such file`); if (e.type === 'dir') return o(`cat: ${args[0]}: Is a directory`); return o(e.content) }
   if (cmd === 'pwd') return o(cwd)
@@ -107,6 +129,15 @@ function processCommand(input, cwd) {
   if (cmd === 'audit') return o(`\n${C.teal}=== Audit System Status ===${C.text}\n\n  Enabled:         Yes\n  Console Output:  Yes\n  Level Filter:    WARNING\n\n  Total Events:    1,247\n  Security Events: 23\n  Failed Logins:   7\n  Rules:           8\n  Recipients:      2\n\n  Recent Events:\n    [06:42:15] LOGIN codix 127.0.0.1\n    [06:42:10] BOOT system started\n    [06:41:55] CONFIG hardening applied\n`)
   if (cmd === 'sandbox') return o(`\n${C.teal}=== Sandboxes ===${C.text}\n\n  ID   NAME                 TYPE        STATUS     CAPS\n  ---  ----                 ----        ------     ----\n  1    web-browser          container   RUNNING    2\n  2    terminal-app         namespace   RUNNING    5\n  3    file-manager         chroot      STOPPED    0\n  4    text-editor          namespace   RUNNING    3\n\n  Active Namespaces: PID, NET, MNT\n  Resource Limits:   512MB RAM, 256 PIDs\n`)
   if (cmd === 'tls') return o(`\n${C.teal}=== Data Protection Status ===${C.text}\n\n  Key Pairs:    2\n    - RSA-2048 (server)\n    - ECDSA-P256 (client)\n\n  Certificates: 3\n    - CN=codixos (self-signed)\n    - CN=*.codixos.local\n    - CN=root-ca (CA)\n\n  Connections:  4 active\n\n  TLS Configuration:\n    Min Version:   1.2\n    Max Version:   1.3\n    Cipher Suites: 7\n    Client Certs:  Optional\n    Hostname Vfy:  Enabled\n`)
+  if (cmd === 'mkdir') return o(args[0] ? `Created directory: ${args[0]}` : 'mkdir: missing operand')
+  if (cmd === 'touch') return o(args[0] ? `Created file: ${args[0]}` : 'touch: missing operand')
+  if (cmd === 'cp') return o(args.length >= 2 ? `Copied ${args[0]} -> ${args[1]}` : 'cp: missing operand')
+  if (cmd === 'mv') return o(args.length >= 2 ? `Moved ${args[0]} -> ${args[1]}` : 'mv: missing operand')
+  if (cmd === 'rm') return o(args[0] ? `Removed: ${args[0]}` : 'rm: missing operand')
+  if (cmd === 'top') return o('  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND\n    1 root      20   0    4096   2048   1024 S   0.0  0.8   0:02.10 codix-init\n   12 codix     20   0    8192   4096   2048 S   0.3  1.6   0:00.45 codix-sh\n   45 codix     20   0   32768  16384   8192 S   0.8  6.4   0:01.22 codix-wm\n   67 codix     20   0   16384   8192   4096 S   0.2  3.2   0:00.18 codix-term\n   89 codix     20   0  131072  65536  32768 S   3.2 25.6   0:04.87 firefox\n   91 codix     20   0   16384   8192   4096 S   0.1  3.2   0:00.09 codix-desktop')
+  if (cmd === 'id') return o('uid=1000(codix) gid=1000(codix) groups=1000(codix),27(sudo)')
+  if (cmd === 'which') return o(args[0] ? `/usr/local/bin/${args[0]}` : 'which: missing argument')
+  if (cmd === 'man') return o(args[0] ? `No manual entry for ${args[0]}\nTry: codix-man ${args[0]}` : 'What manual page do you want?\nFor example, try \'man codix\'.')
   return o(`codix: command not found: ${cmd}\nType 'help' for available commands.`)
 }
 
@@ -179,6 +210,7 @@ function TermApp({ onOutput }) {
     const raw = input.trim(); setInput('')
     if (!raw) { setLines(p => [...p, { type: 'p', text: '' }]); return }
     setHist(h => [...h, raw]); setHIdx(-1)
+    if (raw === 'history') { setLines(p => [...p, { type: 'p', text: raw }, { type: 'o', text: hist.map((h, i) => `  ${String(i + 1).padStart(4)}  ${h}`).join('\n') }]); return }
     const res = processCommand(raw, cwd)
     if (res.output === '__CLEAR__') { setLines([]); setCwd(res.newCwd); return }
     setCwd(res.newCwd)
@@ -681,6 +713,7 @@ function InteractiveTerminal() {
     const raw = input.trim(); setInput('')
     if (!raw) { setLines(p => [...p, { type: 'p', text: '' }]); return }
     setHist(h => [...h, raw]); setHIdx(-1)
+    if (raw === 'history') { setLines(p => [...p, { type: 'p', text: raw }, { type: 'o', text: hist.map((h, i) => `  ${String(i + 1).padStart(4)}  ${h}`).join('\n') }]); return }
     const res = processCommand(raw, cwd)
     if (res.output === '__CLEAR__') { setLines([]); setCwd(res.newCwd); return }
     setCwd(res.newCwd)
