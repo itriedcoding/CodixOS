@@ -66,7 +66,7 @@ function processCommand(input) {
   const cmd = parts[0]; const args = parts.slice(1)
   if (!cmd) return ''
   if (cmd === 'cd') { const t = args[0] ? resolvePath(args[0]) : '~'; if (FILESYSTEM[t]?.type === 'dir') { cwd = t; return null }; return `cd: ${args[0]}: No such directory` }
-  if (cmd === 'help') return 'Commands: help, neofetch, ls, cat, pwd, whoami, hostname, uname, date, uptime, free, ps, df, echo, clear, pkg, theme, exit'
+  if (cmd === 'help') return 'Commands: help, neofetch, ls, cat, pwd, whoami, hostname, uname, date, uptime, free, ps, df, echo, clear, pkg, theme, secureboot, encrypt, exit'
   if (cmd === 'neofetch') return `       _____      _               ____   _____ \n      / ____|    | |             |  _ \\ / ____|\n     | |     ___ | | ___  _ __   | |_) | (___  \n     | |    / _ \\| |/ _ \\| '__|  |  _ < \\___ \\ \n     | |___| (_) | | (_) | |     | |_) |____) |\n      \\_____|\\___/|_|\\___/|_|     |____/|_____/ \n\n${C.blue}OS${C.text}:       CodixOS 1.0.0 x86_64\n${C.blue}Kernel${C.text}:   codix-kernel 1.0.0\n${C.blue}Shell${C.text}:    codix-sh 1.0.0\n${C.blue}CPU${C.text}:      Virtual CPU @ 2.4GHz\n${C.blue}Memory${C.text}:   32MiB / 256MiB\n\n${C.red}███${C.green}███${C.yellow}███${C.blue}███${C.magenta}███${C.teal}███${C.text}`
   if (cmd === 'ls') { const t = args[0] ? resolvePath(args[0]) : cwd; const e = FILESYSTEM[t]; if (!e) return `ls: cannot access '${args[0]}': No such file or directory`; if (e.type !== 'dir') return args[0]; return e.children.map(c => { const cp = t === '~' ? `~/${c}` : `${t}/${c}`; return FILESYSTEM[cp]?.type === 'dir' ? `${C.blue}${c}/${C.text}` : c }).join('  ') }
   if (cmd === 'cat') { if (!args[0]) return 'cat: missing operand'; const p = resolvePath(args[0]); const e = FILESYSTEM[p]; if (!e) return `cat: ${args[0]}: No such file`; if (e.type === 'dir') return `cat: ${args[0]}: Is a directory`; return e.content }
@@ -84,6 +84,8 @@ function processCommand(input) {
   if (cmd === 'theme') return `Catppuccin Mocha:\n  ${C.red}██${C.text} Red #f38ba8\n  ${C.blue}██${C.text} Blue #89b4fa\n  ${C.green}██${C.text} Green #a6e3a1\n  ${C.yellow}██${C.text} Yellow #f9e2af\n  ${C.magenta}██${C.text} Magenta #f5c2e7`
   if (cmd === 'exit') return 'Nice try. This terminal has no escape.'
   if (cmd === 'pkg') { if (args[0] === 'list') return 'Installed:\n  codix-kernel 1.0.0\n  codix-sh 1.0.0\n  codix-term 1.0.0\n  codix-pkg 1.0.0'; return 'Usage: pkg <install|list>' }
+  if (cmd === 'secureboot') return `\n${C.teal}=== Secure Boot Status ===${C.text}\n\n  State:             ${C.green}ENABLED${C.text}\n  Trusted Keys:      1\n\n  ${C.teal}Boot Chain Verification:${C.text}\n    Firmware:        ${C.green}VERIFIED${C.text}\n    Bootloader:      ${C.green}VERIFIED${C.text}\n    Kernel:          ${C.green}VERIFIED${C.text}\n    Initrd:          ${C.yellow}NOT VERIFIED${C.text}\n\n  Overall Status:    ${C.green}SECURE${C.text}\n`
+  if (cmd === 'encrypt') return `\n${C.teal}=== Encrypted Devices ===${C.text}\n\n  DEVICE               MAPPER         CIPHER     KEY      STATUS\n  ------               ------         ------     ---      ------\n  /dev/sda2            codix-data     aes-xts    256      ${C.green}UNLOCKED${C.text}\n  /dev/sda3            -              aes-xts    256      ${C.yellow}LOCKED${C.text}\n`
   return `codix: command not found: ${cmd}\nType 'help' for available commands.`
 }
 
@@ -528,8 +530,10 @@ export default function HomePage() {
               { ico: <Ico.Terminal s={24} c="text-codix-blue" />, t: 'Terminal-First', d: '40+ built-in commands. Tab completion. Command history.' },
               { ico: <Ico.Package s={24} c="text-codix-blue" />, t: 'Package Manager', d: 'Install software with codix-pkg. Simple dependency resolution.' },
               { ico: <Ico.Monitor s={24} c="text-codix-blue" />, t: 'Desktop Environment', d: 'Optional GUI with window manager and built-in applications.' },
-              { ico: <Ico.Shield s={24} c="text-codix-blue" />, t: 'Secure by Default', d: 'User permissions, process isolation, and sandboxing built in.' },
+              { ico: <Ico.Shield s={24} c="text-codix-green" />, t: 'Secure Boot', d: 'Verify digital signatures of firmware and bootloaders for trusted startup.' },
+              { ico: <Ico.Shield s={24} c="text-codix-yellow" />, t: 'Full-Disk Encryption', d: 'LUKS-based encryption. AES-256-XTS. Protect your data at rest.' },
               { ico: <Ico.HardDrive s={24} c="text-codix-blue" />, t: 'Bootable ISO', d: 'Create a bootable USB. Run live without installation.' },
+              { ico: <Ico.Terminal s={24} c="text-codix-peach" />, t: 'Firefox Pre-installed', d: 'Full-featured web browser ready to use out of the box.' },
             ].map((f, i) => (
               <div key={i} className="card group">
                 <div className="mb-3 group-hover:text-codix-green transition-colors">{f.ico}</div>

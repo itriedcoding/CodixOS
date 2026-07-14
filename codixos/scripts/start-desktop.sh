@@ -128,6 +128,19 @@ start_apps() {
         echo $! > "$PID_DIR/terminal.pid"
     fi
     
+    # Start Firefox browser (pre-installed)
+    if command -v firefox &> /dev/null; then
+        firefox > "$LOG_DIR/firefox.log" 2>&1 &
+        echo $! > "$PID_DIR/firefox.pid"
+        echo -e "${GREEN}Firefox browser started${NC}"
+    elif [ -f "/usr/bin/firefox" ]; then
+        /usr/bin/firefox > "$LOG_DIR/firefox.log" 2>&1 &
+        echo $! > "$PID_DIR/firefox.pid"
+        echo -e "${GREEN}Firefox browser started${NC}"
+    else
+        echo -e "${YELLOW}Firefox not found, skipping browser startup${NC}"
+    fi
+    
     echo -e "${GREEN}Applications started${NC}"
 }
 
