@@ -2,51 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --codix-bg: #1e1e2e;
-  --codix-surface: #313244;
-  --codix-overlay: #45475a;
-  --codix-text: #cdd6f4;
-  --codix-subtext: #a6adc8;
-  --codix-blue: #89b4fa;
-  --codix-green: #a6e3a1;
-  --codix-yellow: #f9e2af;
-  --codix-red: #f38ba8;
-  --codix-magenta: #f5c2e7;
-  --codix-teal: #94e2d5;
-  --codix-peach: #fab387;
-}
-
 html {
   scroll-behavior: smooth;
 }
 
 body {
   font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-  background-color: var(--codix-bg);
-  color: var(--codix-text);
+  background-color: #1e1e2e;
+  color: #cdd6f4;
   line-height: 1.6;
 }
 
 ::selection {
-  background-color: var(--codix-blue);
-  color: var(--codix-bg);
-}
-
-@layer components {
-  .btn-primary {
-    @apply inline-flex items-center justify-center px-8 py-3 bg-codix-blue text-codix-bg font-semibold rounded-lg
-           hover:bg-codix-green transition-all duration-300
-           shadow-lg hover:shadow-codix-blue/30;
-  }
-
-  .btn-secondary {
-    @apply inline-flex items-center justify-center px-8 py-3 border-2 border-codix-blue text-codix-blue font-semibold rounded-lg
-           hover:bg-codix-blue hover:text-codix-bg transition-all duration-300;
-  }
-
-  .card {
-    @apply bg-codix-surface rounded-xl p-6 border border-codix-overlay
-           hover:border-codix-blue transition-all duration-300;
-  }
+  background-color: #89b4fa;
+  color: #1e1e2e;
 }

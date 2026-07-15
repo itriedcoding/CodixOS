@@ -1,0 +1,29 @@
+version: '3.8'
+services:
+  panel:
+    build: ./panel
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: postgresql://codix:codix@db:5432/codixpanel
+      JWT_SECRET: change-me-in-production
+    depends_on:
+      - db
+    restart: unless-stopped
+
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: codix
+      POSTGRES_PASSWORD: codix
+      POSTGRES_DB: codixpanel
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+
+volumes:
+  pgdata:

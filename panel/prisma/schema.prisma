@@ -1,0 +1,169 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         String   @id @default(uuid()) @db.Uuid
+  email      String   @unique
+  username   String   @unique
+  password   String
+  root_admin Boolean  @default(false)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  servers       Server[]
+  activity_logs ActivityLog[]
+  api_keys      ApiKey[]
+
+  @@map("users")
+}
+
+model Server {
+  id              String   @id @default(uuid()) @db.Uuid
+  user_id         String   @db.Uuid
+  name            String
+  node_id         String   @db.Uuid
+  egg_id          String   @db.Uuid
+  uuid            String   @unique @db.Uuid
+  startup         String
+  environment     Json     @default("{}")
+  image           String
+  skip_egg_install Boolean @default(false)
+  created_at      DateTime @default(now())
+
+  user       User        @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  node       Node        @relation(fields: [node_id], references: [id], onDelete: Cascade)
+  egg        Egg         @relation(fields: [egg_id], references: [id], onDelete: Cascade)
+  databases  Database[]
+  backups    Backup[]
+  schedules  Schedule[]
+  allocations Allocation[]
+
+  @@index([user_id])
+  @@index([node_id])
+  @@map("servers")
+}
+
+model Node {
+  id          String   @id @default(uuid()) @db.Uuid
+  name        String
+  location_id String   @db.Uuid
+  fqdn        String
+  scheme      String   @default("https")
+  behind_proxy Boolean @default(false)
+  memory      Int
+  disk        Int
+  cpu         Int
+  io          Int      @default(500)
+  created_at  DateTime @default(now())
+
+  servers     Server[]
+  allocations Allocation[]
+
+  @@map("nodes")
+}
+
+model Egg {
+  id           String   @id @default(uuid()) @db.Uuid
+  name         String
+  category     String
+  description  String
+  docker_image String
+  startup      String
+  config_files Json     @default("[]")
+  created_at   DateTime @default(now())
+
+  servers Server[]
+
+  @@map("eggs")
+}
+
+model Database {
+  id        String   @id @default(uuid()) @db.Uuid
+  server_id String   @db.Uuid
+  name      String
+  host      String
+  port      Int      @default(5432)
+  username  String
+  password  String
+  created_at DateTime @default(now())
+
+  server Server @relation(fields: [server_id], references: [id], onDelete: Cascade)
+
+  @@index([server_id])
+  @@map("databases")
+}
+
+model Backup {
+  id        String   @id @default(uuid()) @db.Uuid
+  server_id String   @db.Uuid
+  name      String
+  size      BigInt   @default(0)
+  created_at DateTime @default(now())
+
+  server Server @relation(fields: [server_id], references: [id], onDelete: Cascade)
+
+  @@index([server_id])
+  @@map("backups")
+}
+
+model ActivityLog {
+  id         String   @id @default(uuid()) @db.Uuid
+  user_id    String   @db.Uuid
+  event      String
+  ip         String
+  data       Json     @default("{}")
+  created_at DateTime @default(now())
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([user_id])
+  @@map("activity_logs")
+}
+
+model ApiKey {
+  id         String   @id @default(uuid()) @db.Uuid
+  user_id    String   @db.Uuid
+  memo       String
+  token      String   @unique
+  created_at DateTime @default(now())
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([user_id])
+  @@map("api_keys")
+}
+
+model Schedule {
+  id         String   @id @default(uuid()) @db.Uuid
+  server_id  String   @db.Uuid
+  name       String
+  is_active  Boolean  @default(true)
+  created_at DateTime @default(now())
+
+  server Server @relation(fields: [server_id], references: [id], onDelete: Cascade)
+
+  @@index([server_id])
+  @@map("schedules")
+}
+
+model Allocation {
+  id       String  @id @default(uuid()) @db.Uuid
+  node_id  String  @db.Uuid
+  ip       String
+  port     Int
+  server_id String? @db.Uuid
+
+  node   Node    @relation(fields: [node_id], references: [id], onDelete: Cascade)
+  server Server? @relation(fields: [server_id], references: [id], onDelete: SetNull)
+
+  @@unique([node_id, ip, port])
+  @@index([node_id])
+  @@index([server_id])
+  @@map("allocations")
+}

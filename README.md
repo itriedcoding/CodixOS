@@ -1,115 +1,93 @@
-# CodixOS
+# Codix Panel
 
-A lightweight, terminal-based operating system designed for simplicity and ease of use.
+Open-source game server management panel. Alternative to Pterodactyl Panel.
 
 ## Features
 
-- **Custom Kernel**: Lightweight kernel with memory management and process scheduling
-- **Custom Shell**: Feature-rich shell with command history and tab completion
-- **Package Manager**: Simple package management system
-- **Desktop Environment**: Optional GUI with window manager and applications
-- **Live USB**: Boot directly from USB without installation
-- **Windows Support**: Run via WSL or standalone installer
+- Multi-game support (Minecraft, Rust, ARK, CS2, Terraria, Factorio, Palworld, Valheim)
+- Docker-based server isolation
+- Real-time console access
+- File manager with code editor
+- Database management (MySQL, PostgreSQL, MongoDB)
+- User management with role-based access control
+- Automated backups with restore
+- Server scheduling (auto-start, auto-stop, tasks)
+- REST API with API keys
+- Server monitoring (CPU, RAM, disk, network)
+- One-click mod/plugin installation
+- Node (Wings) daemon for distributed hosting
+
+## Architecture
+
+- **Panel** - Web interface and API (Next.js + TypeScript + Prisma + PostgreSQL)
+- **Wings** - Node daemon (Node.js + Docker API) runs on each game server node
 
 ## Quick Start
 
-### Prerequisites
-
-- GCC/G++ compiler
-- NASM assembler
-- GNU Make
-- QEMU (for testing)
-
-### Building from Source
+### Docker (Recommended)
 
 ```bash
-# Clone the repository
-git clone https://github.com/codixos/CodixOS.git
-cd CodixOS
-
-# Build everything
-./build-user.sh all
-
-# Or build individual components
-./build-user.sh shell      # Build shell only
-./build-user.sh utils      # Build utilities only
-./build-user.sh desktop    # Build desktop environment
+docker compose up -d
 ```
 
-### Running CodixOS
+### Manual
 
-#### Terminal Mode
+1. Clone the repo
+2. `cd panel && npm install`
+3. Configure `.env` (see `.env.example`)
+4. `npx prisma db push`
+5. `npm run build && npm start`
 
-```bash
-# Run the shell
-./build/codix-sh
-```
+### Wings Daemon
 
-#### Desktop Mode (requires SDL2 and X11)
+1. `cd daemon && npm install`
+2. Configure `.env` (see `.env.example`)
+3. `npm run build && npm start`
 
-```bash
-# Install dependencies
-sudo apt-get install libsdl2-dev xorg
+## Supported Games
 
-# Build and start desktop
-./build-user.sh desktop
-./scripts/start-desktop.sh
-```
+| Game | Eggs Available | Mods Supported |
+|------|---------------|----------------|
+| Minecraft | Vanilla, Paper, Spigot, Forge, Fabric, Purpur, BungeeCord, Velocity | Yes |
+| Rust | Vanilla, Oxide, uMod | Yes |
+| ARK | Vanilla, Mods | Yes |
+| CS2 | Vanilla, Custom | Yes |
+| Terraria | TModLoader | Yes |
+| Factorio | Vanilla | Yes |
+| Palworld | Vanilla | Yes |
+| Valheim | Vanilla, BepInEx | Yes |
 
-#### Using QEMU
+## API Documentation
 
-```bash
-# Build ISO
-./build-iso.sh
+See `/docs/api.md`
 
-# Run in QEMU
-qemu-system-x86_64 -cdrom codixos-1.0.0.iso -m 512M
-```
+## Tech Stack
+
+- Next.js 14 (App Router)
+- TypeScript
+- Prisma ORM
+- PostgreSQL
+- Docker
+- Tailwind CSS
+- JWT Authentication
+- WebSocket
 
 ## Project Structure
 
 ```
 CodixOS/
-├── codixos/                 # Main OS source code
-│   ├── kernel/             # Custom kernel
-│   ├── shell/              # Command shell
-│   ├── utils/              # System utilities
-│   ├── terminal/           # Terminal emulator
-│   ├── pkgmanager/         # Package manager
-│   ├── init/               # Init system
-│   └── desktop/            # Desktop environment
-│       ├── wm/             # Window manager
-│       ├── shell/          # Desktop shell
-│       └── apps/           # GUI applications
-├── iso/                    # ISO build configuration
-├── website/                # Project website
-├── build-user.sh           # Build script (Linux/WSL)
-├── build.bat               # Build script (Windows)
-├── build-iso.sh            # ISO builder
-└── README.md               # This file
+├── panel/                  # Web interface and API
+│   ├── src/                # Next.js source
+│   ├── prisma/             # Database schema
+│   └── package.json
+├── daemon/                 # Wings daemon
+│   ├── src/                # TypeScript source
+│   └── package.json
+├── docker-compose.yml      # Full stack deployment
+├── .github/workflows/      # CI/CD
+└── README.md
 ```
-
-## Documentation
-
-- [Installation Guide](docs/installation.md)
-- [User Guide](docs/user-guide.md)
-- [Developer Guide](docs/developer.md)
-- [API Reference](docs/api.md)
-
-## Contributing
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Acknowledgments
-
-- Inspired by Linux, Minix, and other Unix-like operating systems
-- Built with simplicity and learning in mind
-- Thanks to all contributors
+MIT License - see [LICENSE](LICENSE) for details.
