@@ -20,8 +20,9 @@ export default function DashboardPage() {
 
   const fetchData = async () => {
     try {
-      const [serversRes] = await Promise.all([
+      const [serversRes, activitiesRes] = await Promise.all([
         fetch("/api/servers"),
+        fetch("/api/admin/users").catch(() => ({ json: () => ({ success: false, data: { data: [] } }) })),
       ]);
 
       const serversData = await serversRes.json();

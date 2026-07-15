@@ -348,14 +348,104 @@ function Features() {
 
 function GameSupport() {
   const games = [
-    { name: 'Minecraft', icon: 'MC', versions: 'Java, Bedrock, Velocity, BungeeCord', color: 'bg-accent-green' },
-    { name: 'Rust', icon: 'Ru', versions: 'Vanilla, Oxide, uMod', color: 'bg-accent-red' },
-    { name: 'ARK', icon: 'AK', versions: 'Survival, Evolved, ASA', color: 'bg-accent-peach' },
-    { name: 'CS2', icon: 'CS', versions: 'Source 2, CS:GO Legacy', color: 'bg-accent-yellow' },
-    { name: 'Terraria', icon: 'Tr', versions: 'tModLoader, Calamity', color: 'bg-accent-blue' },
-    { name: 'Factorio', icon: 'Fa', versions: 'Vanilla, Multiplayer', color: 'bg-accent-purple' },
-    { name: 'Palworld', icon: 'Pw', versions: 'Dedicated Server', color: 'bg-accent-teal' },
-    { name: 'Valheim', icon: 'Vh', versions: 'Dedicated Server', color: 'bg-accent-pink' },
+    {
+      name: 'Minecraft',
+      versions: 'Java, Bedrock, Velocity, BungeeCord',
+      color: '#4ade80',
+      bgColor: 'bg-green-50',
+      icon: (
+        <svg viewBox="0 0 24 24" fill="currentColor" className="w-10 h-10">
+          <path d="M3 3v18h18V3H3zm8.5 14.5l-3.5-2v-5l3.5 2v5zm5-7l-3.5 2v5l3.5-2v-5zm-5-2l-3.5-2 3.5-2 3.5 2-3.5 2zm5 0l-3.5-2 3.5-2 3.5 2-3.5 2z" fill="#4ade80"/>
+          <rect x="4" y="4" width="16" height="16" rx="2" fill="none" stroke="#4ade80" strokeWidth="1.5"/>
+          <path d="M8 8h8v8H8z" fill="#4ade80" opacity="0.3"/>
+        </svg>
+      ),
+    },
+    {
+      name: 'Rust',
+      versions: 'Vanilla, Oxide, uMod',
+      color: '#f87171',
+      bgColor: 'bg-red-50',
+      icon: (
+        <svg viewBox="0 0 24 24" fill="currentColor" className="w-10 h-10">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" fill="#f87171"/>
+          <text x="12" y="14" textAnchor="middle" fill="white" fontSize="8" fontWeight="bold">R</text>
+        </svg>
+      ),
+    },
+    {
+      name: 'Counter-Strike 2',
+      versions: 'Source 2, Competitive, Casual',
+      color: '#fbbf24',
+      bgColor: 'bg-yellow-50',
+      icon: (
+        <svg viewBox="0 0 24 24" fill="currentColor" className="w-10 h-10">
+          <circle cx="12" cy="12" r="10" fill="#fbbf24"/>
+          <text x="12" y="16" textAnchor="middle" fill="#1e1e2e" fontSize="10" fontWeight="bold">CS</text>
+        </svg>
+      ),
+    },
+    {
+      name: 'ARK: Survival Evolved',
+      versions: 'Survival, Evolved, ASA',
+      color: '#fb923c',
+      bgColor: 'bg-orange-50',
+      icon: (
+        <svg viewBox="0 0 24 24" fill="currentColor" className="w-10 h-10">
+          <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" fill="none" stroke="#fb923c" strokeWidth="2"/>
+          <text x="12" y="14" textAnchor="middle" fill="#fb923c" fontSize="7" fontWeight="bold">ARK</text>
+        </svg>
+      ),
+    },
+    {
+      name: 'Terraria',
+      versions: 'tModLoader, Calamity, Vanilla',
+      color: '#38bdf8',
+      bgColor: 'bg-sky-50',
+      icon: (
+        <svg viewBox="0 0 24 24" fill="currentColor" className="w-10 h-10">
+          <rect x="4" y="4" width="16" height="16" rx="3" fill="#38bdf8"/>
+          <text x="12" y="14" textAnchor="middle" fill="white" fontSize="7" fontWeight="bold">TR</text>
+        </svg>
+      ),
+    },
+    {
+      name: 'Palworld',
+      versions: 'Dedicated Server, Co-op',
+      color: '#a78bfa',
+      bgColor: 'bg-violet-50',
+      icon: (
+        <svg viewBox="0 0 24 24" fill="currentColor" className="w-10 h-10">
+          <circle cx="12" cy="12" r="10" fill="#a78bfa"/>
+          <text x="12" y="16" textAnchor="middle" fill="white" fontSize="8" fontWeight="bold">Pw</text>
+        </svg>
+      ),
+    },
+    {
+      name: 'Valheim',
+      versions: 'Dedicated Server, Crossplay',
+      color: '#34d399',
+      bgColor: 'bg-emerald-50',
+      icon: (
+        <svg viewBox="0 0 24 24" fill="currentColor" className="w-10 h-10">
+          <path d="M12 2L4 6v12l8 4 8-4V6l-8-4z" fill="#34d399"/>
+          <text x="12" y="15" textAnchor="middle" fill="white" fontSize="7" fontWeight="bold">VH</text>
+        </svg>
+      ),
+    },
+    {
+      name: 'Factorio',
+      versions: 'Vanilla, Multiplayer, Mods',
+      color: '#f472b6',
+      bgColor: 'bg-pink-50',
+      icon: (
+        <svg viewBox="0 0 24 24" fill="currentColor" className="w-10 h-10">
+          <circle cx="12" cy="12" r="10" fill="#f472b6"/>
+          <circle cx="12" cy="12" r="5" fill="none" stroke="white" strokeWidth="1.5"/>
+          <text x="12" y="15" textAnchor="middle" fill="white" fontSize="7" fontWeight="bold">F</text>
+        </svg>
+      ),
+    },
   ]
 
   return (
@@ -374,10 +464,10 @@ function GameSupport() {
           {games.map((game, i) => (
             <div
               key={i}
-              className="group p-6 rounded-2xl bg-white border border-border hover:border-accent-blue/50 transition-all duration-300 text-center cursor-pointer"
+              className="group p-6 rounded-2xl bg-white border border-border hover:border-accent-blue/50 transition-all duration-300 text-center cursor-pointer hover:shadow-lg"
             >
-              <div className={`inline-flex items-center justify-center w-16 h-16 rounded-xl ${game.color}/10 mb-4`}>
-                <span className={`text-2xl font-bold ${game.color}`}>{game.icon}</span>
+              <div className={`inline-flex items-center justify-center w-16 h-16 rounded-xl ${game.bgColor} mb-4 group-hover:scale-110 transition-transform`}>
+                {game.icon}
               </div>
               <h3 className="text-base font-semibold text-text-primary mb-1">{game.name}</h3>
               <p className="text-xs text-text-muted">{game.versions}</p>
