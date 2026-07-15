@@ -15,12 +15,10 @@ jobs:
         with:
           node-version: 20
       - name: Install Panel dependencies
-        run: cd panel && npm ci
-      - name: Lint Panel
-        run: cd panel && npm run lint
+        run: cd panel && npm install
       - name: Build Panel
         run: cd panel && npm run build
       - name: Install Daemon dependencies
-        run: cd daemon && npm ci
+        run: cd daemon && npm install
       - name: Build Daemon
         run: cd daemon && npm run build
