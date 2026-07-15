@@ -127,7 +127,7 @@ export async function getContainer(
 
 export async function getContainerInfo(
   containerId: string
-): Promise<Dockerode.ContainerInfo> {
+): Promise<Dockerode.ContainerInspectInfo> {
   const container = docker.getContainer(containerId);
   return container.inspect();
 }

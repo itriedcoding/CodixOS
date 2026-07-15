@@ -6,6 +6,9 @@ export interface User {
   root_admin: boolean;
   created_at: Date;
   updated_at: Date;
+  _count?: {
+    servers: number;
+  };
 }
 
 export interface Server {

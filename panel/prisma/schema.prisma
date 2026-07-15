@@ -103,7 +103,7 @@ model Backup {
   id        String   @id @default(uuid()) @db.Uuid
   server_id String   @db.Uuid
   name      String
-  size      BigInt   @default(0)
+  size      Int      @default(0)
   created_at DateTime @default(now())
 
   server Server @relation(fields: [server_id], references: [id], onDelete: Cascade)
