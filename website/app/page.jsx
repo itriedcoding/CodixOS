@@ -169,7 +169,7 @@ function Hero() {
           and a beautiful web interface.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
-          <a href="#demo" className="inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-accent-blue text-white font-semibold rounded-xl hover:bg-accent-blue/90 transition-all duration-300 shadow-lg hover:shadow-accent-blue/20 text-base">
+          <a href="https://codix-panel.vercel.app" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-accent-blue text-white font-semibold rounded-xl hover:bg-accent-blue/90 transition-all duration-300 shadow-lg hover:shadow-accent-blue/20 text-base">
             <Ico.Monitor s={20} />
             Try Live Demo
           </a>
@@ -224,20 +224,22 @@ function LiveDemo() {
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <a
-                  href="https://github.com/itriedcoding/CodixPanel"
+                  href="https://codix-panel.vercel.app/register"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-accent-blue text-white font-semibold rounded-xl hover:bg-accent-blue/90 transition-all duration-300"
                 >
-                  <Ico.Github s={18} />
-                  Deploy Your Own
+                  <Ico.ExternalLink s={18} />
+                  Open Panel Demo
                 </a>
                 <a
-                  href="#install"
+                  href="https://github.com/itriedcoding/CodixPanel"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="inline-flex items-center justify-center gap-2 px-6 py-3 border-2 border-accent-blue text-accent-blue font-semibold rounded-xl hover:bg-accent-blue hover:text-white transition-all duration-300"
                 >
-                  <Ico.ArrowRight s={18} />
-                  Installation Guide
+                  <Ico.Github s={18} />
+                  Deploy Your Own
                 </a>
               </div>
             </div>
